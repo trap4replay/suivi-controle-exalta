@@ -303,7 +303,10 @@
 
             <div class="form-section">
                 <h2>📋 Données collectées</h2>
-                <button onclick="exportToExcel()" class="btn btn-success">📥 Exporter vers Excel avec indicateurs</button>
+                <div style="margin-bottom: 15px;">
+                    <button onclick="exportToExcel()" class="btn btn-success">📥 Exporter vers Excel avec indicateurs</button>
+                    <button onclick="clearAllData()" class="btn btn-secondary" style="background: #dc3545;">🗑️ Effacer toutes les données</button>
+                </div>
                 <div class="table-container">
                     <table id="dataTable">
                         <thead>
@@ -330,10 +333,38 @@
     <script>
         let data = [];
 
-        // Initialiser la date du jour au chargement
+        // Charger les données sauvegardées au démarrage
         window.addEventListener('DOMContentLoaded', function() {
             document.getElementById('date').valueAsDate = new Date();
+            loadData();
+            updateTable();
+            updateStats();
         });
+
+        // Charger les données depuis le stockage local
+        function loadData() {
+            const savedData = localStorage.getItem('exalta_controle_data');
+            if (savedData) {
+                try {
+                    data = JSON.parse(savedData);
+                    console.log('Données chargées:', data.length, 'observations');
+                } catch(e) {
+                    console.error('Erreur de chargement:', e);
+                    data = [];
+                }
+            }
+        }
+
+        // Sauvegarder les données dans le stockage local
+        function saveData() {
+            try {
+                localStorage.setItem('exalta_controle_data', JSON.stringify(data));
+                console.log('Données sauvegardées:', data.length, 'observations');
+            } catch(e) {
+                console.error('Erreur de sauvegarde:', e);
+                alert('Erreur lors de la sauvegarde des données');
+            }
+        }
 
         document.getElementById('dataForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -360,11 +391,12 @@
                 data.push(entry);
                 console.log('Données:', data); // Debug
                 
+                saveData(); // Sauvegarder automatiquement
                 updateTable();
                 updateStats();
                 resetForm();
                 
-                alert('Observation ajoutée avec succès !');
+                alert('Observation ajoutée et sauvegardée avec succès !');
             } catch(error) {
                 console.error('Erreur:', error);
                 alert('Erreur lors de l\'ajout: ' + error.message);
@@ -431,6 +463,7 @@
         function deleteEntry(index) {
             if (confirm('Supprimer cette observation ?')) {
                 data.splice(index, 1);
+                saveData(); // Sauvegarder après suppression
                 updateTable();
                 updateStats();
             }
@@ -439,6 +472,18 @@
         function resetForm() {
             document.getElementById('dataForm').reset();
             document.getElementById('date').valueAsDate = new Date();
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ ATTENTION : Voulez-vous vraiment effacer TOUTES les données ?\n\nCette action est irréversible !')) {
+                if (confirm('Confirmez-vous la suppression définitive de ' + data.length + ' observations ?')) {
+                    data = [];
+                    localStorage.removeItem('exalta_controle_data');
+                    updateTable();
+                    updateStats();
+                    alert('Toutes les données ont été effacées.');
+                }
+            }
         }
 
         function exportToExcel() {
