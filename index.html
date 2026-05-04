@@ -278,6 +278,86 @@
             font-weight: 700;
             margin-bottom: 20px;
         }
+        .chrono-block {
+            background: #f0f9fa;
+            border: 2px solid #d0e8ea;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .chrono-display {
+            font-size: 64px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            color: #003D5C;
+            letter-spacing: 4px;
+            line-height: 1;
+            margin-bottom: 18px;
+            transition: color 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+        .chrono-display.running { color: #00697A; }
+        .chrono-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-chrono-start {
+            background: linear-gradient(135deg, #00697A 0%, #00A3A6 100%);
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0,163,166,0.3);
+        }
+        .btn-chrono-start:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,163,166,0.4); }
+        .btn-chrono-stop {
+            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(231,76,60,0.3);
+        }
+        .btn-chrono-stop:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(231,76,60,0.4); }
+        .btn-chrono-pause {
+            background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(243,156,18,0.3);
+        }
+        .btn-chrono-pause:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(243,156,18,0.4); }
+        .btn-chrono-reset {
+            background: #e9ecef;
+            color: #495057;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-chrono-reset:hover { background: #dee2e6; }
+        .chrono-hint { font-size: 12px; color: #6c757d; margin-top: 12px; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        .running { animation: blink 1.2s ease-in-out infinite; }
     </style>
 </head>
 <body>
@@ -305,12 +385,26 @@
                             <input type="text" id="lotOperateur" placeholder="Nom de l'opérateur" required>
                         </div>
                         <div class="form-group">
+                            <label for="lotNumeroAffaire">Numéro affaire *</label>
+                            <input type="text" id="lotNumeroAffaire" placeholder="Ex: A00" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lotNumeroOF">Numéro OF *</label>
+                            <input type="text" id="lotNumeroOF" placeholder="Ex: OF00" required>
+                        </div>
+                        <div class="form-group">
                             <label for="lotReference">Référence du lot *</label>
-                            <input type="text" id="lotReference" placeholder="Ex: LOT-12345" required>
+                            <input type="text" id="lotReference" placeholder="Ex: SP" required>
                         </div>
                         <div class="form-group">
                             <label for="lotQuantite">Quantité de pièces dans le lot *</label>
                             <input type="number" id="lotQuantite" placeholder="Ex: 50, 200..." min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-grid" style="margin-top: 10px;">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="lotDescriptionControle">Description du contrôle effectué (commune à toutes les pièces du lot)</label>
+                            <textarea id="lotDescriptionControle" rows="2" placeholder="Ex: Contrôle de l'état de surface, vérification des dimensions critiques..."></textarea>
                         </div>
                     </div>
                     <div style="margin-top: 25px;">
@@ -332,25 +426,20 @@
                 <div class="piece-counter" id="pieceCounter"></div>
 
                 <form id="pieceForm">
-                    <h3 class="section-title">📸 Photo et description du contrôle</h3>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="piecePhoto">Photo de la pièce (optionnel)</label>
-                            <input type="file" id="piecePhoto" accept="image/*" capture="environment">
+                    <h3 class="section-title">⏱️ Chronomètre</h3>
+
+                    <div class="chrono-block">
+                        <div class="chrono-display" id="chronoDisplay">00:00:00</div>
+                        <div class="chrono-buttons">
+                            <button type="button" id="btnStart" class="btn-chrono-start" onclick="startChrono()">▶ Démarrer</button>
+                            <button type="button" id="btnPause" class="btn-chrono-pause" onclick="pauseChrono()" style="display:none;">⏸ Pause</button>
+                            <button type="button" id="btnStop" class="btn-chrono-stop" onclick="stopChrono()" style="display:none;">⏹ Arrêter</button>
+                            <button type="button" id="btnReset" class="btn-chrono-reset" onclick="resetChrono()">↺ Réinitialiser</button>
                         </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="descriptionControle">Description du contrôle effectué *</label>
-                            <textarea id="descriptionControle" rows="2" placeholder="Ex: Contrôle de l'état de surface, vérification des dimensions critiques..." required></textarea>
-                        </div>
+                        <div class="chrono-hint" id="chronoHint">Appuyez sur Démarrer pour lancer le chrono de cette pièce</div>
                     </div>
 
-                    <h3 class="section-title">⏱️ Temps de contrôle</h3>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="tempsControle">Temps de contrôle (minutes) *</label>
-                            <input type="number" id="tempsControle" step="0.1" placeholder="min" min="0" required>
-                        </div>
-                    </div>
+                    <input type="hidden" id="tempsControle">
 
                     <div class="form-group" style="margin-top: 20px;">
                         <label for="observations">Observations / Anomalies (optionnel)</label>
@@ -378,6 +467,8 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Opérateur</th>
+                                <th>Affaire</th>
+                                <th>OF</th>
                                 <th>Référence Lot</th>
                                 <th>Pièce N°</th>
                                 <th>Description contrôle</th>
@@ -397,6 +488,81 @@
         let data = [];
         let currentLot = null;
         let currentPieceNumber = 0;
+
+        // --- CHRONOMETRE ---
+        let chronoInterval = null;
+        let chronoSeconds = 0;
+        let chronoRunning = false;
+
+        function formatTime(secs) {
+            const h = String(Math.floor(secs / 3600)).padStart(2, '0');
+            const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
+            const s = String(secs % 60).padStart(2, '0');
+            return `${h}:${m}:${s}`;
+        }
+
+        function startChrono() {
+            if (chronoRunning) return;
+            chronoRunning = true;
+            document.getElementById('btnStart').style.display = 'none';
+            document.getElementById('btnPause').style.display = 'inline-block';
+            document.getElementById('btnStop').style.display = 'inline-block';
+            document.getElementById('chronoDisplay').classList.add('running');
+            document.getElementById('chronoHint').textContent = '⏱ Chrono en cours...';
+            chronoInterval = setInterval(() => {
+                chronoSeconds++;
+                document.getElementById('chronoDisplay').textContent = formatTime(chronoSeconds);
+            }, 1000);
+        }
+
+        function pauseChrono() {
+            if (!chronoRunning) {
+                // Reprendre
+                chronoRunning = true;
+                document.getElementById('btnPause').textContent = '⏸ Pause';
+                document.getElementById('chronoDisplay').classList.add('running');
+                document.getElementById('chronoHint').textContent = '⏱ Chrono en cours...';
+                chronoInterval = setInterval(() => {
+                    chronoSeconds++;
+                    document.getElementById('chronoDisplay').textContent = formatTime(chronoSeconds);
+                }, 1000);
+            } else {
+                // Mettre en pause
+                clearInterval(chronoInterval);
+                chronoRunning = false;
+                document.getElementById('btnPause').textContent = '▶ Reprendre';
+                document.getElementById('chronoDisplay').classList.remove('running');
+                document.getElementById('chronoHint').textContent = '⏸ En pause — appuyez sur Reprendre pour continuer';
+            }
+        }
+
+        function stopChrono() {
+            clearInterval(chronoInterval);
+            chronoRunning = false;
+            document.getElementById('btnStart').style.display = 'none';
+            document.getElementById('btnPause').style.display = 'none';
+            document.getElementById('btnStop').style.display = 'none';
+            document.getElementById('btnStart').textContent = '▶ Démarrer';
+            document.getElementById('chronoDisplay').classList.remove('running');
+            const mins = (chronoSeconds / 60).toFixed(2);
+            document.getElementById('tempsControle').value = mins;
+            document.getElementById('chronoHint').textContent = `✅ Temps enregistré : ${formatTime(chronoSeconds)} → ${mins} min`;
+        }
+
+        function resetChrono() {
+            clearInterval(chronoInterval);
+            chronoRunning = false;
+            chronoSeconds = 0;
+            document.getElementById('chronoDisplay').textContent = '00:00:00';
+            document.getElementById('chronoDisplay').classList.remove('running');
+            document.getElementById('btnStart').style.display = 'inline-block';
+            document.getElementById('btnPause').style.display = 'none';
+            document.getElementById('btnPause').textContent = '⏸ Pause';
+            document.getElementById('btnStop').style.display = 'none';
+            document.getElementById('tempsControle').value = '';
+            document.getElementById('chronoHint').textContent = 'Appuyez sur Démarrer pour lancer le chrono de cette pièce';
+        }
+        // --- FIN CHRONOMETRE ---
 
         // Charger les données sauvegardées au démarrage
         window.addEventListener('DOMContentLoaded', function() {
@@ -438,8 +604,11 @@
             currentLot = {
                 date: document.getElementById('lotDate').value,
                 operateur: document.getElementById('lotOperateur').value.trim(),
+                numeroAffaire: document.getElementById('lotNumeroAffaire').value.trim(),
+                numeroOF: document.getElementById('lotNumeroOF').value.trim(),
                 reference: document.getElementById('lotReference').value.trim(),
-                quantite: parseInt(document.getElementById('lotQuantite').value)
+                quantite: parseInt(document.getElementById('lotQuantite').value),
+                descriptionControle: document.getElementById('lotDescriptionControle').value.trim()
             };
             
             currentPieceNumber = 1;
@@ -448,6 +617,8 @@
             document.getElementById('lotInfo').innerHTML = `
                 <h3>📦 ${currentLot.reference}</h3>
                 <p>Opérateur : ${currentLot.operateur} | Date : ${new Date(currentLot.date).toLocaleDateString('fr-FR')} | Total : ${currentLot.quantite} pièces</p>
+                <p style="margin-top:4px;">Affaire : <strong>${currentLot.numeroAffaire}</strong> | OF : <strong>${currentLot.numeroOF}</strong></p>
+                ${currentLot.descriptionControle ? `<p style="margin-top:6px; font-style:italic; opacity:0.9;">🔍 ${currentLot.descriptionControle}</p>` : ''}
             `;
             
             updatePieceCounter();
@@ -461,33 +632,28 @@
         // ÉTAPE 2 : Saisir une pièce
         document.getElementById('pieceForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const photoInput = document.getElementById('piecePhoto');
-            let photoData = null;
-            
-            // Si une photo a été uploadée
-            if (photoInput.files && photoInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    photoData = event.target.result;
-                    savePieceData(photoData);
-                };
-                reader.readAsDataURL(photoInput.files[0]);
-            } else {
-                savePieceData(null);
+            // Si le chrono tourne encore, on l'arrête automatiquement
+            if (chronoRunning) stopChrono();
+            const temps = parseFloat(document.getElementById('tempsControle').value);
+            if (!temps || temps <= 0) {
+                alert('⚠️ Veuillez démarrer puis arrêter le chronomètre avant de valider.');
+                return;
             }
+            savePieceData();
         });
 
-        function savePieceData(photoData) {
+        function savePieceData() {
             const entry = {
                 date: currentLot.date,
                 operateur: currentLot.operateur,
+                numeroAffaire: currentLot.numeroAffaire,
+                numeroOF: currentLot.numeroOF,
                 lotReference: currentLot.reference,
                 pieceNumber: currentPieceNumber,
-                descriptionControle: document.getElementById('descriptionControle').value.trim(),
+                descriptionControle: currentLot.descriptionControle,
                 tempsControle: parseFloat(document.getElementById('tempsControle').value) || 0,
                 observations: document.getElementById('observations').value.trim(),
-                photo: photoData
+                photo: null
             };
 
             entry.tempsTotal = entry.tempsControle;
@@ -525,11 +691,8 @@
         }
 
         function resetPieceForm() {
-            document.getElementById('descriptionControle').value = '';
-            document.getElementById('tempsControle').value = '';
             document.getElementById('observations').value = '';
-            document.getElementById('piecePhoto').value = '';
-            document.getElementById('descriptionControle').focus();
+            resetChrono();
         }
 
         function resetLot() {
@@ -554,13 +717,14 @@
             
             data.forEach((entry, index) => {
                 const row = tbody.insertRow();
-                const photoIcon = entry.photo ? '📷' : '';
                 row.innerHTML = `
                     <td>${new Date(entry.date).toLocaleDateString('fr-FR')}</td>
                     <td>${entry.operateur}</td>
+                    <td>${entry.numeroAffaire || '-'}</td>
+                    <td>${entry.numeroOF || '-'}</td>
                     <td>${entry.lotReference}</td>
-                    <td>${entry.pieceNumber} ${photoIcon}</td>
-                    <td>${entry.descriptionControle}</td>
+                    <td>${entry.pieceNumber}</td>
+                    <td>${entry.descriptionControle || '-'}</td>
                     <td><strong>${entry.tempsControle.toFixed(1)} min</strong></td>
                     <td>${entry.observations || '-'}</td>
                     <td><button class="btn-delete" onclick="deleteEntry(${index})">🗑️</button></td>
@@ -639,12 +803,13 @@
             const exportData = data.map(entry => ({
                 'Date': new Date(entry.date).toLocaleDateString('fr-FR'),
                 'Opérateur': entry.operateur,
+                'N° Affaire': entry.numeroAffaire || '',
+                'N° OF': entry.numeroOF || '',
                 'Référence Lot': entry.lotReference,
                 'Pièce N°': entry.pieceNumber,
                 'Description contrôle': entry.descriptionControle,
                 'Temps contrôle (min)': entry.tempsControle,
-                'Observations': entry.observations,
-                'Photo': entry.photo ? 'Oui' : 'Non'
+                'Observations': entry.observations
             }));
 
             const ws1 = XLSX.utils.json_to_sheet(exportData);
