@@ -332,25 +332,29 @@
                 <div class="piece-counter" id="pieceCounter"></div>
 
                 <form id="pieceForm">
-                    <h3 class="section-title">Temps de contrôle (en minutes)</h3>
+                    <h3 class="section-title">📸 Photo et description du contrôle</h3>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="tempsControleVisuel">Temps contrôle visuel</label>
-                            <input type="number" id="tempsControleVisuel" step="0.1" placeholder="min" min="0">
+                            <label for="piecePhoto">Photo de la pièce (optionnel)</label>
+                            <input type="file" id="piecePhoto" accept="image/*" capture="environment">
                         </div>
-                        <div class="form-group">
-                            <label for="tempsControleDimensionnel">Temps contrôle dimensionnel</label>
-                            <input type="number" id="tempsControleDimensionnel" step="0.1" placeholder="min" min="0">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="descriptionControle">Description du contrôle effectué *</label>
+                            <textarea id="descriptionControle" rows="2" placeholder="Ex: Contrôle de l'état de surface, vérification des dimensions critiques..." required></textarea>
                         </div>
+                    </div>
+
+                    <h3 class="section-title">⏱️ Temps de contrôle</h3>
+                    <div class="form-grid">
                         <div class="form-group">
-                            <label for="tempsAttente">Temps d'attente/recherche</label>
-                            <input type="number" id="tempsAttente" step="0.1" placeholder="min" min="0">
+                            <label for="tempsControle">Temps de contrôle (minutes) *</label>
+                            <input type="number" id="tempsControle" step="0.1" placeholder="min" min="0" required>
                         </div>
                     </div>
 
                     <div class="form-group" style="margin-top: 20px;">
-                        <label for="observations">Observations (optionnel)</label>
-                        <textarea id="observations" rows="2" placeholder="Problème rencontré sur cette pièce..."></textarea>
+                        <label for="observations">Observations / Anomalies (optionnel)</label>
+                        <textarea id="observations" rows="2" placeholder="Problème rencontré, anomalie détectée..."></textarea>
                     </div>
 
                     <div style="margin-top: 25px;">
@@ -376,10 +380,9 @@
                                 <th>Opérateur</th>
                                 <th>Référence Lot</th>
                                 <th>Pièce N°</th>
-                                <th>Ctrl Visuel</th>
-                                <th>Ctrl Dim.</th>
-                                <th>Attente</th>
-                                <th>Total</th>
+                                <th>Description contrôle</th>
+                                <th>Temps (min)</th>
+                                <th>Observations</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -459,20 +462,35 @@
         document.getElementById('pieceForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const photoInput = document.getElementById('piecePhoto');
+            let photoData = null;
+            
+            // Si une photo a été uploadée
+            if (photoInput.files && photoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    photoData = event.target.result;
+                    savePieceData(photoData);
+                };
+                reader.readAsDataURL(photoInput.files[0]);
+            } else {
+                savePieceData(null);
+            }
+        });
+
+        function savePieceData(photoData) {
             const entry = {
                 date: currentLot.date,
                 operateur: currentLot.operateur,
                 lotReference: currentLot.reference,
                 pieceNumber: currentPieceNumber,
-                tempsControleVisuel: parseFloat(document.getElementById('tempsControleVisuel').value) || 0,
-                tempsControleDimensionnel: parseFloat(document.getElementById('tempsControleDimensionnel').value) || 0,
-                tempsAttente: parseFloat(document.getElementById('tempsAttente').value) || 0,
-                observations: document.getElementById('observations').value.trim()
+                descriptionControle: document.getElementById('descriptionControle').value.trim(),
+                tempsControle: parseFloat(document.getElementById('tempsControle').value) || 0,
+                observations: document.getElementById('observations').value.trim(),
+                photo: photoData
             };
 
-            entry.tempsTotal = entry.tempsControleVisuel + 
-                               entry.tempsControleDimensionnel + 
-                               entry.tempsAttente;
+            entry.tempsTotal = entry.tempsControle;
 
             data.push(entry);
             saveData();
@@ -492,7 +510,7 @@
                 updatePieceCounter();
                 updateProgressBar();
             }
-        });
+        }
 
         function updatePieceCounter() {
             document.getElementById('pieceCounter').textContent = 
@@ -507,11 +525,11 @@
         }
 
         function resetPieceForm() {
-            document.getElementById('tempsControleVisuel').value = '';
-            document.getElementById('tempsControleDimensionnel').value = '';
-            document.getElementById('tempsAttente').value = '';
+            document.getElementById('descriptionControle').value = '';
+            document.getElementById('tempsControle').value = '';
             document.getElementById('observations').value = '';
-            document.getElementById('tempsControleVisuel').focus();
+            document.getElementById('piecePhoto').value = '';
+            document.getElementById('descriptionControle').focus();
         }
 
         function resetLot() {
@@ -536,15 +554,15 @@
             
             data.forEach((entry, index) => {
                 const row = tbody.insertRow();
+                const photoIcon = entry.photo ? '📷' : '';
                 row.innerHTML = `
                     <td>${new Date(entry.date).toLocaleDateString('fr-FR')}</td>
                     <td>${entry.operateur}</td>
                     <td>${entry.lotReference}</td>
-                    <td>${entry.pieceNumber}</td>
-                    <td>${entry.tempsControleVisuel.toFixed(1)} min</td>
-                    <td>${entry.tempsControleDimensionnel.toFixed(1)} min</td>
-                    <td>${entry.tempsAttente.toFixed(1)} min</td>
-                    <td><strong>${entry.tempsTotal.toFixed(1)} min</strong></td>
+                    <td>${entry.pieceNumber} ${photoIcon}</td>
+                    <td>${entry.descriptionControle}</td>
+                    <td><strong>${entry.tempsControle.toFixed(1)} min</strong></td>
+                    <td>${entry.observations || '-'}</td>
                     <td><button class="btn-delete" onclick="deleteEntry(${index})">🗑️</button></td>
                 `;
             });
@@ -557,10 +575,9 @@
             }
 
             const totalObs = data.length;
-            const avgTotal = data.reduce((sum, e) => sum + e.tempsTotal, 0) / totalObs;
-            const avgVisuel = data.reduce((sum, e) => sum + e.tempsControleVisuel, 0) / totalObs;
-            const avgDimensionnel = data.reduce((sum, e) => sum + e.tempsControleDimensionnel, 0) / totalObs;
-            const avgAttente = data.reduce((sum, e) => sum + e.tempsAttente, 0) / totalObs;
+            const avgTotal = data.reduce((sum, e) => sum + e.tempsControle, 0) / totalObs;
+            const minTemps = Math.min(...data.map(e => e.tempsControle));
+            const maxTemps = Math.max(...data.map(e => e.tempsControle));
 
             // Compter le nombre de lots uniques
             const lots = new Set(data.map(e => e.lotReference));
@@ -575,20 +592,16 @@
                     <div class="value">${lots.size}</div>
                 </div>
                 <div class="stat-card">
-                    <h3>Temps moyen total</h3>
+                    <h3>Temps moyen</h3>
                     <div class="value">${avgTotal.toFixed(1)} min</div>
                 </div>
                 <div class="stat-card">
-                    <h3>Temps moyen visuel</h3>
-                    <div class="value">${avgVisuel.toFixed(1)} min</div>
+                    <h3>Temps minimum</h3>
+                    <div class="value">${minTemps.toFixed(1)} min</div>
                 </div>
                 <div class="stat-card">
-                    <h3>Temps moyen dimensionnel</h3>
-                    <div class="value">${avgDimensionnel.toFixed(1)} min</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Temps moyen attente</h3>
-                    <div class="value">${avgAttente.toFixed(1)} min</div>
+                    <h3>Temps maximum</h3>
+                    <div class="value">${maxTemps.toFixed(1)} min</div>
                 </div>
             `;
         }
@@ -628,11 +641,10 @@
                 'Opérateur': entry.operateur,
                 'Référence Lot': entry.lotReference,
                 'Pièce N°': entry.pieceNumber,
-                'Temps contrôle visuel (min)': entry.tempsControleVisuel,
-                'Temps contrôle dimensionnel (min)': entry.tempsControleDimensionnel,
-                'Temps attente (min)': entry.tempsAttente,
-                'TEMPS TOTAL (min)': entry.tempsTotal,
-                'Observations': entry.observations
+                'Description contrôle': entry.descriptionControle,
+                'Temps contrôle (min)': entry.tempsControle,
+                'Observations': entry.observations,
+                'Photo': entry.photo ? 'Oui' : 'Non'
             }));
 
             const ws1 = XLSX.utils.json_to_sheet(exportData);
@@ -640,15 +652,10 @@
 
             // Feuille 2 : Indicateurs globaux
             const totalObs = data.length;
-            const avgTotal = data.reduce((sum, e) => sum + e.tempsTotal, 0) / totalObs;
-            const avgVisuel = data.reduce((sum, e) => sum + e.tempsControleVisuel, 0) / totalObs;
-            const avgDimensionnel = data.reduce((sum, e) => sum + e.tempsControleDimensionnel, 0) / totalObs;
-            const avgAttente = data.reduce((sum, e) => sum + e.tempsAttente, 0) / totalObs;
-            
-            const totalVisuel = data.reduce((sum, e) => sum + e.tempsControleVisuel, 0);
-            const totalDimensionnel = data.reduce((sum, e) => sum + e.tempsControleDimensionnel, 0);
-            const totalAttente = data.reduce((sum, e) => sum + e.tempsAttente, 0);
-            const grandTotal = totalVisuel + totalDimensionnel + totalAttente;
+            const avgTotal = data.reduce((sum, e) => sum + e.tempsControle, 0) / totalObs;
+            const minTemps = Math.min(...data.map(e => e.tempsControle));
+            const maxTemps = Math.max(...data.map(e => e.tempsControle));
+            const totalTemps = data.reduce((sum, e) => sum + e.tempsControle, 0);
 
             const lots = new Set(data.map(e => e.lotReference));
 
@@ -659,22 +666,12 @@
                 { 'Indicateur': 'Nombre total de pièces contrôlées', 'Valeur': totalObs, 'Unité': '' },
                 { 'Indicateur': 'Nombre de lots', 'Valeur': lots.size, 'Unité': '' },
                 { 'Indicateur': '', 'Valeur': '', 'Unité': '' },
-                { 'Indicateur': '=== TEMPS MOYENS PAR PIÈCE ===', 'Valeur': '', 'Unité': '' },
-                { 'Indicateur': 'Temps moyen total par pièce', 'Valeur': avgTotal.toFixed(2), 'Unité': 'min' },
-                { 'Indicateur': 'Temps moyen contrôle visuel', 'Valeur': avgVisuel.toFixed(2), 'Unité': 'min' },
-                { 'Indicateur': 'Temps moyen contrôle dimensionnel', 'Valeur': avgDimensionnel.toFixed(2), 'Unité': 'min' },
-                { 'Indicateur': 'Temps moyen attente', 'Valeur': avgAttente.toFixed(2), 'Unité': 'min' },
-                { 'Indicateur': '', 'Valeur': '', 'Unité': '' },
-                { 'Indicateur': '=== TEMPS CUMULÉS TOTAUX ===', 'Valeur': '', 'Unité': '' },
-                { 'Indicateur': 'Temps cumulé contrôle visuel', 'Valeur': totalVisuel.toFixed(2), 'Unité': 'min' },
-                { 'Indicateur': 'Temps cumulé contrôle dimensionnel', 'Valeur': totalDimensionnel.toFixed(2), 'Unité': 'min' },
-                { 'Indicateur': 'Temps cumulé attente (perte)', 'Valeur': totalAttente.toFixed(2), 'Unité': 'min' },
-                { 'Indicateur': 'TEMPS TOTAL CUMULÉ', 'Valeur': grandTotal.toFixed(2), 'Unité': 'min' },
-                { 'Indicateur': '', 'Valeur': '', 'Unité': '' },
-                { 'Indicateur': '=== RÉPARTITION DU TEMPS ===', 'Valeur': '', 'Unité': '' },
-                { 'Indicateur': '% Contrôle visuel', 'Valeur': ((totalVisuel / grandTotal) * 100).toFixed(1), 'Unité': '%' },
-                { 'Indicateur': '% Contrôle dimensionnel', 'Valeur': ((totalDimensionnel / grandTotal) * 100).toFixed(1), 'Unité': '%' },
-                { 'Indicateur': '% Attente (perte)', 'Valeur': ((totalAttente / grandTotal) * 100).toFixed(1), 'Unité': '%' }
+                { 'Indicateur': '=== TEMPS DE CONTRÔLE ===', 'Valeur': '', 'Unité': '' },
+                { 'Indicateur': 'Temps moyen par pièce', 'Valeur': avgTotal.toFixed(2), 'Unité': 'min' },
+                { 'Indicateur': 'Temps minimum', 'Valeur': minTemps.toFixed(2), 'Unité': 'min' },
+                { 'Indicateur': 'Temps maximum', 'Valeur': maxTemps.toFixed(2), 'Unité': 'min' },
+                { 'Indicateur': 'Temps total cumulé', 'Valeur': totalTemps.toFixed(2), 'Unité': 'min' },
+                { 'Indicateur': 'Temps total cumulé', 'Valeur': (totalTemps / 60).toFixed(2), 'Unité': 'heures' }
             ];
 
             const ws2 = XLSX.utils.json_to_sheet(indicateurs);
