@@ -232,6 +232,52 @@
             font-size: 18px;
             font-weight: 600;
         }
+        .hidden {
+            display: none;
+        }
+        .progress-bar {
+            background: #e0f0f2;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #00697A 0%, #00A3A6 100%);
+            height: 100%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .lot-info {
+            background: linear-gradient(135deg, #003D5C 0%, #00697A 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .lot-info h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .lot-info p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .piece-counter {
+            background: #00A3A6;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -245,33 +291,48 @@
         </div>
         
         <div class="content">
-            <div class="form-section">
-                <h2>📝 Saisie d'une nouvelle observation</h2>
-                <form id="dataForm">
+            <!-- ÉTAPE 1 : Déclaration du lot -->
+            <div class="form-section" id="lotSection">
+                <h2>📦 Étape 1 : Déclarer un nouveau lot</h2>
+                <form id="lotForm">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="date">Date *</label>
-                            <input type="date" id="date" required>
+                            <label for="lotDate">Date *</label>
+                            <input type="date" id="lotDate" required>
                         </div>
                         <div class="form-group">
-                            <label for="operateur">Opérateur *</label>
-                            <input type="text" id="operateur" placeholder="Nom de l'opérateur" required>
+                            <label for="lotOperateur">Opérateur *</label>
+                            <input type="text" id="lotOperateur" placeholder="Nom de l'opérateur" required>
                         </div>
                         <div class="form-group">
-                            <label for="type">Type d'opération *</label>
-                            <input type="text" id="type" value="Contrôle final" readonly style="background: #f0f9fa;">
+                            <label for="lotReference">Référence du lot *</label>
+                            <input type="text" id="lotReference" placeholder="Ex: LOT-12345" required>
                         </div>
                         <div class="form-group">
-                            <label for="reference">Référence pièce *</label>
-                            <input type="text" id="reference" placeholder="Ex: REF-12345" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="quantite">Quantité</label>
-                            <input type="number" id="quantite" placeholder="Nombre de pièces" min="0">
+                            <label for="lotQuantite">Quantité de pièces dans le lot *</label>
+                            <input type="number" id="lotQuantite" placeholder="Ex: 50, 200..." min="1" required>
                         </div>
                     </div>
-                    
-                    <h3 class="section-title">⏱️ Temps de contrôle (en minutes)</h3>
+                    <div style="margin-top: 25px;">
+                        <button type="submit" class="btn btn-primary">➡️ Commencer la saisie des pièces</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ÉTAPE 2 : Saisie pièce par pièce -->
+            <div class="form-section hidden" id="pieceSection">
+                <h2>⏱️ Étape 2 : Saisie des temps par pièce</h2>
+                
+                <div class="lot-info" id="lotInfo"></div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar">0%</div>
+                </div>
+
+                <div class="piece-counter" id="pieceCounter"></div>
+
+                <form id="pieceForm">
+                    <h3 class="section-title">Temps de contrôle (en minutes)</h3>
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="tempsControleVisuel">Temps contrôle visuel</label>
@@ -288,13 +349,13 @@
                     </div>
 
                     <div class="form-group" style="margin-top: 20px;">
-                        <label for="observations">Observations / Points d'amélioration</label>
-                        <textarea id="observations" rows="3" placeholder="Notez ici les problèmes rencontrés, les pertes de temps identifiées, etc."></textarea>
+                        <label for="observations">Observations (optionnel)</label>
+                        <textarea id="observations" rows="2" placeholder="Problème rencontré sur cette pièce..."></textarea>
                     </div>
 
                     <div style="margin-top: 25px;">
-                        <button type="submit" class="btn btn-primary">➕ Ajouter l'observation</button>
-                        <button type="button" onclick="resetForm()" class="btn btn-secondary">🔄 Réinitialiser</button>
+                        <button type="submit" class="btn btn-primary">➡️ Pièce suivante</button>
+                        <button type="button" onclick="cancelLot()" class="btn btn-secondary">❌ Annuler le lot</button>
                     </div>
                 </form>
             </div>
@@ -313,9 +374,8 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Opérateur</th>
-                                <th>Type</th>
-                                <th>Référence</th>
-                                <th>Qté</th>
+                                <th>Référence Lot</th>
+                                <th>Pièce N°</th>
                                 <th>Ctrl Visuel</th>
                                 <th>Ctrl Dim.</th>
                                 <th>Attente</th>
@@ -332,10 +392,12 @@
 
     <script>
         let data = [];
+        let currentLot = null;
+        let currentPieceNumber = 0;
 
         // Charger les données sauvegardées au démarrage
         window.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('date').valueAsDate = new Date();
+            document.getElementById('lotDate').valueAsDate = new Date();
             loadData();
             updateTable();
             updateStats();
@@ -366,40 +428,107 @@
             }
         }
 
-        document.getElementById('dataForm').addEventListener('submit', function(e) {
+        // ÉTAPE 1 : Déclarer le lot
+        document.getElementById('lotForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            console.log('Formulaire soumis'); // Debug
+            currentLot = {
+                date: document.getElementById('lotDate').value,
+                operateur: document.getElementById('lotOperateur').value.trim(),
+                reference: document.getElementById('lotReference').value.trim(),
+                quantite: parseInt(document.getElementById('lotQuantite').value)
+            };
             
-            try {
-                const entry = {
-                    date: document.getElementById('date').value,
-                    operateur: document.getElementById('operateur').value.trim(),
-                    type: document.getElementById('type').value || 'Contrôle final',
-                    reference: document.getElementById('reference').value.trim(),
-                    quantite: parseInt(document.getElementById('quantite').value) || 0,
-                    tempsControleVisuel: parseFloat(document.getElementById('tempsControleVisuel').value) || 0,
-                    tempsControleDimensionnel: parseFloat(document.getElementById('tempsControleDimensionnel').value) || 0,
-                    tempsAttente: parseFloat(document.getElementById('tempsAttente').value) || 0,
-                    observations: document.getElementById('observations').value.trim()
-                };
+            currentPieceNumber = 1;
+            
+            // Afficher les infos du lot
+            document.getElementById('lotInfo').innerHTML = `
+                <h3>📦 ${currentLot.reference}</h3>
+                <p>Opérateur : ${currentLot.operateur} | Date : ${new Date(currentLot.date).toLocaleDateString('fr-FR')} | Total : ${currentLot.quantite} pièces</p>
+            `;
+            
+            updatePieceCounter();
+            updateProgressBar();
+            
+            // Basculer vers la saisie des pièces
+            document.getElementById('lotSection').classList.add('hidden');
+            document.getElementById('pieceSection').classList.remove('hidden');
+        });
 
-                entry.tempsTotal = entry.tempsControleVisuel + 
-                                   entry.tempsControleDimensionnel + 
-                                   entry.tempsAttente;
+        // ÉTAPE 2 : Saisir une pièce
+        document.getElementById('pieceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const entry = {
+                date: currentLot.date,
+                operateur: currentLot.operateur,
+                lotReference: currentLot.reference,
+                pieceNumber: currentPieceNumber,
+                tempsControleVisuel: parseFloat(document.getElementById('tempsControleVisuel').value) || 0,
+                tempsControleDimensionnel: parseFloat(document.getElementById('tempsControleDimensionnel').value) || 0,
+                tempsAttente: parseFloat(document.getElementById('tempsAttente').value) || 0,
+                observations: document.getElementById('observations').value.trim()
+            };
 
-                data.push(entry);
-                console.log('Données:', data); // Debug
-                
-                saveData(); // Sauvegarder automatiquement
-                updateTable();
-                updateStats();
-                resetForm();
-            } catch(error) {
-                console.error('Erreur:', error);
-                alert('Erreur lors de l\'ajout: ' + error.message);
+            entry.tempsTotal = entry.tempsControleVisuel + 
+                               entry.tempsControleDimensionnel + 
+                               entry.tempsAttente;
+
+            data.push(entry);
+            saveData();
+            updateTable();
+            updateStats();
+            
+            // Pièce suivante
+            currentPieceNumber++;
+            
+            if (currentPieceNumber > currentLot.quantite) {
+                // Lot terminé
+                alert(`✅ Lot ${currentLot.reference} terminé !\n${currentLot.quantite} pièces contrôlées.`);
+                resetLot();
+            } else {
+                // Continuer avec la pièce suivante
+                resetPieceForm();
+                updatePieceCounter();
+                updateProgressBar();
             }
         });
+
+        function updatePieceCounter() {
+            document.getElementById('pieceCounter').textContent = 
+                `Pièce ${currentPieceNumber} / ${currentLot.quantite}`;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentPieceNumber - 1) / currentLot.quantite) * 100;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+        }
+
+        function resetPieceForm() {
+            document.getElementById('tempsControleVisuel').value = '';
+            document.getElementById('tempsControleDimensionnel').value = '';
+            document.getElementById('tempsAttente').value = '';
+            document.getElementById('observations').value = '';
+            document.getElementById('tempsControleVisuel').focus();
+        }
+
+        function resetLot() {
+            currentLot = null;
+            currentPieceNumber = 0;
+            document.getElementById('lotForm').reset();
+            document.getElementById('pieceForm').reset();
+            document.getElementById('lotDate').valueAsDate = new Date();
+            document.getElementById('lotSection').classList.remove('hidden');
+            document.getElementById('pieceSection').classList.add('hidden');
+        }
+
+        function cancelLot() {
+            if (confirm('Voulez-vous vraiment annuler ce lot ?\nLes pièces déjà saisies seront conservées.')) {
+                resetLot();
+            }
+        }
 
         function updateTable() {
             const tbody = document.getElementById('tableBody');
@@ -410,9 +539,8 @@
                 row.innerHTML = `
                     <td>${new Date(entry.date).toLocaleDateString('fr-FR')}</td>
                     <td>${entry.operateur}</td>
-                    <td>${entry.type}</td>
-                    <td>${entry.reference}</td>
-                    <td>${entry.quantite}</td>
+                    <td>${entry.lotReference}</td>
+                    <td>${entry.pieceNumber}</td>
                     <td>${entry.tempsControleVisuel.toFixed(1)} min</td>
                     <td>${entry.tempsControleDimensionnel.toFixed(1)} min</td>
                     <td>${entry.tempsAttente.toFixed(1)} min</td>
@@ -434,10 +562,17 @@
             const avgDimensionnel = data.reduce((sum, e) => sum + e.tempsControleDimensionnel, 0) / totalObs;
             const avgAttente = data.reduce((sum, e) => sum + e.tempsAttente, 0) / totalObs;
 
+            // Compter le nombre de lots uniques
+            const lots = new Set(data.map(e => e.lotReference));
+
             document.getElementById('statsContainer').innerHTML = `
                 <div class="stat-card">
-                    <h3>Observations totales</h3>
+                    <h3>Pièces contrôlées</h3>
                     <div class="value">${totalObs}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Nombre de lots</h3>
+                    <div class="value">${lots.size}</div>
                 </div>
                 <div class="stat-card">
                     <h3>Temps moyen total</h3>
@@ -461,15 +596,10 @@
         function deleteEntry(index) {
             if (confirm('Supprimer cette observation ?')) {
                 data.splice(index, 1);
-                saveData(); // Sauvegarder après suppression
+                saveData();
                 updateTable();
                 updateStats();
             }
-        }
-
-        function resetForm() {
-            document.getElementById('dataForm').reset();
-            document.getElementById('date').valueAsDate = new Date();
         }
 
         function clearAllData() {
@@ -496,9 +626,8 @@
             const exportData = data.map(entry => ({
                 'Date': new Date(entry.date).toLocaleDateString('fr-FR'),
                 'Opérateur': entry.operateur,
-                'Type opération': entry.type,
-                'Référence': entry.reference,
-                'Quantité': entry.quantite,
+                'Référence Lot': entry.lotReference,
+                'Pièce N°': entry.pieceNumber,
                 'Temps contrôle visuel (min)': entry.tempsControleVisuel,
                 'Temps contrôle dimensionnel (min)': entry.tempsControleDimensionnel,
                 'Temps attente (min)': entry.tempsAttente,
@@ -521,14 +650,17 @@
             const totalAttente = data.reduce((sum, e) => sum + e.tempsAttente, 0);
             const grandTotal = totalVisuel + totalDimensionnel + totalAttente;
 
+            const lots = new Set(data.map(e => e.lotReference));
+
             const indicateurs = [
                 { 'Indicateur': 'EXALTA GROUP - Analyse des temps de contrôle final', 'Valeur': '', 'Unité': '' },
                 { 'Indicateur': 'Projet mené par Nicolas Risco', 'Valeur': '', 'Unité': '' },
                 { 'Indicateur': '', 'Valeur': '', 'Unité': '' },
-                { 'Indicateur': 'Nombre total d\'observations', 'Valeur': totalObs, 'Unité': '' },
+                { 'Indicateur': 'Nombre total de pièces contrôlées', 'Valeur': totalObs, 'Unité': '' },
+                { 'Indicateur': 'Nombre de lots', 'Valeur': lots.size, 'Unité': '' },
                 { 'Indicateur': '', 'Valeur': '', 'Unité': '' },
-                { 'Indicateur': '=== TEMPS MOYENS PAR CONTRÔLE ===', 'Valeur': '', 'Unité': '' },
-                { 'Indicateur': 'Temps moyen total par contrôle', 'Valeur': avgTotal.toFixed(2), 'Unité': 'min' },
+                { 'Indicateur': '=== TEMPS MOYENS PAR PIÈCE ===', 'Valeur': '', 'Unité': '' },
+                { 'Indicateur': 'Temps moyen total par pièce', 'Valeur': avgTotal.toFixed(2), 'Unité': 'min' },
                 { 'Indicateur': 'Temps moyen contrôle visuel', 'Valeur': avgVisuel.toFixed(2), 'Unité': 'min' },
                 { 'Indicateur': 'Temps moyen contrôle dimensionnel', 'Valeur': avgDimensionnel.toFixed(2), 'Unité': 'min' },
                 { 'Indicateur': 'Temps moyen attente', 'Valeur': avgAttente.toFixed(2), 'Unité': 'min' },
@@ -548,7 +680,43 @@
             const ws2 = XLSX.utils.json_to_sheet(indicateurs);
             XLSX.utils.book_append_sheet(wb, ws2, "Indicateurs");
 
-            // Feuille 3 : Analyse par opérateur
+            // Feuille 3 : Analyse par lot
+            const lotStats = {};
+            data.forEach(entry => {
+                if (!lotStats[entry.lotReference]) {
+                    lotStats[entry.lotReference] = {
+                        operateur: entry.operateur,
+                        date: entry.date,
+                        count: 0,
+                        totalVisuel: 0,
+                        totalDimensionnel: 0,
+                        totalAttente: 0,
+                        total: 0
+                    };
+                }
+                lotStats[entry.lotReference].count++;
+                lotStats[entry.lotReference].totalVisuel += entry.tempsControleVisuel;
+                lotStats[entry.lotReference].totalDimensionnel += entry.tempsControleDimensionnel;
+                lotStats[entry.lotReference].totalAttente += entry.tempsAttente;
+                lotStats[entry.lotReference].total += entry.tempsTotal;
+            });
+
+            const analyseLots = Object.keys(lotStats).map(lot => ({
+                'Référence Lot': lot,
+                'Date': new Date(lotStats[lot].date).toLocaleDateString('fr-FR'),
+                'Opérateur': lotStats[lot].operateur,
+                'Nb pièces': lotStats[lot].count,
+                'Temps moyen/pièce (min)': (lotStats[lot].total / lotStats[lot].count).toFixed(2),
+                'Temps total lot (min)': lotStats[lot].total.toFixed(2),
+                'Temps moyen visuel (min)': (lotStats[lot].totalVisuel / lotStats[lot].count).toFixed(2),
+                'Temps moyen dimensionnel (min)': (lotStats[lot].totalDimensionnel / lotStats[lot].count).toFixed(2),
+                'Temps moyen attente (min)': (lotStats[lot].totalAttente / lotStats[lot].count).toFixed(2)
+            }));
+
+            const ws3 = XLSX.utils.json_to_sheet(analyseLots);
+            XLSX.utils.book_append_sheet(wb, ws3, "Par lot");
+
+            // Feuille 4 : Analyse par opérateur
             const operateurs = {};
             data.forEach(entry => {
                 if (!operateurs[entry.operateur]) {
@@ -569,15 +737,15 @@
 
             const analyseOperateurs = Object.keys(operateurs).map(op => ({
                 'Opérateur': op,
-                'Nb observations': operateurs[op].count,
+                'Nb pièces contrôlées': operateurs[op].count,
                 'Temps moyen total (min)': (operateurs[op].total / operateurs[op].count).toFixed(2),
                 'Temps moyen visuel (min)': (operateurs[op].totalVisuel / operateurs[op].count).toFixed(2),
                 'Temps moyen dimensionnel (min)': (operateurs[op].totalDimensionnel / operateurs[op].count).toFixed(2),
                 'Temps moyen attente (min)': (operateurs[op].totalAttente / operateurs[op].count).toFixed(2)
             }));
 
-            const ws3 = XLSX.utils.json_to_sheet(analyseOperateurs);
-            XLSX.utils.book_append_sheet(wb, ws3, "Par opérateur");
+            const ws4 = XLSX.utils.json_to_sheet(analyseOperateurs);
+            XLSX.utils.book_append_sheet(wb, ws4, "Par opérateur");
             
             XLSX.writeFile(wb, `EXALTA_Controle_Final_${new Date().toISOString().split('T')[0]}.xlsx`);
         }
