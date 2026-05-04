@@ -371,9 +371,9 @@
         </div>
         
         <div class="content">
-            <!-- ÉTAPE 1 : Déclaration du lot -->
+            <!-- Déclaration du lot -->
             <div class="form-section" id="lotSection">
-                <h2>📦 Étape 1 : Déclarer un nouveau lot</h2>
+                <h2>📦 Déclarer un nouveau lot</h2>
                 <form id="lotForm">
                     <div class="form-grid">
                         <div class="form-group">
@@ -413,9 +413,9 @@
                 </form>
             </div>
 
-            <!-- ÉTAPE 2 : Saisie pièce par pièce -->
+            <!-- Saisie pièce par pièce -->
             <div class="form-section hidden" id="pieceSection">
-                <h2>⏱️ Étape 2 : Saisie des temps par pièce</h2>
+                <h2>⏱️ Saisie des temps par pièce</h2>
                 
                 <div class="lot-info" id="lotInfo"></div>
                 
@@ -597,7 +597,7 @@
             }
         }
 
-        // ÉTAPE 1 : Déclarer le lot
+        // Déclarer le lot
         document.getElementById('lotForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -629,7 +629,7 @@
             document.getElementById('pieceSection').classList.remove('hidden');
         });
 
-        // ÉTAPE 2 : Saisir une pièce
+        // Saisir une pièce
         document.getElementById('pieceForm').addEventListener('submit', function(e) {
             e.preventDefault();
             // Si le chrono tourne encore, on l'arrête automatiquement
