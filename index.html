@@ -278,141 +278,6 @@
             font-weight: 700;
             margin-bottom: 20px;
         }
-        .chrono-block {
-            background: #f0f9fa;
-            border: 2px solid #d0e8ea;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        .chrono-display {
-            font-size: 64px;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-            color: #003D5C;
-            letter-spacing: 4px;
-            line-height: 1;
-            margin-bottom: 18px;
-            transition: color 0.3s;
-            font-family: 'Courier New', monospace;
-        }
-        .chrono-display.running { color: #00697A; }
-        .chrono-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .btn-chrono-start {
-            background: linear-gradient(135deg, #00697A 0%, #00A3A6 100%);
-            color: white;
-            border: none;
-            padding: 14px 36px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(0,163,166,0.3);
-        }
-        .btn-chrono-start:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,163,166,0.4); }
-        .btn-chrono-stop {
-            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
-            color: white;
-            border: none;
-            padding: 14px 36px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(231,76,60,0.3);
-        }
-        .btn-chrono-stop:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(231,76,60,0.4); }
-        .btn-chrono-pause {
-            background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
-            color: white;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(243,156,18,0.3);
-        }
-        .btn-chrono-pause:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(243,156,18,0.4); }
-        .btn-chrono-reset {
-            background: #e9ecef;
-            color: #495057;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-chrono-reset:hover { background: #dee2e6; }
-        .chrono-hint { font-size: 12px; color: #6c757d; margin-top: 12px; }
-        .type-control-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .type-btn {
-            border: 3px solid #d0e8ea;
-            border-radius: 12px;
-            padding: 20px 16px;
-            cursor: pointer;
-            text-align: center;
-            background: #f8fbfc;
-            transition: all 0.2s;
-            font-size: 15px;
-            font-weight: 600;
-            color: #003D5C;
-            width: 100%;
-            display: block;
-        }
-        .type-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-            border-color: #00A3A6;
-        }
-        .type-btn.selected-visuel {
-            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-            border-color: #2e7d32 !important;
-            color: #1b5e20;
-            box-shadow: 0 4px 15px rgba(46,125,50,0.25);
-        }
-        .type-btn.selected-outil {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            border-color: #1565c0 !important;
-            color: #0d47a1;
-            box-shadow: 0 4px 15px rgba(21,101,192,0.25);
-        }
-        .type-icon { font-size: 36px; display: block; margin-bottom: 8px; }
-        .type-label { font-size: 14px; font-weight: 700; display: block; }
-        .type-desc { font-size: 11px; opacity: 0.75; margin-top: 4px; display: block; }
-        .badge-visuel {
-            display: inline-block; background: #2e7d32; color: white;
-            padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
-        }
-        .badge-outil {
-            display: inline-block; background: #1565c0; color: white;
-            padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
-        }
-        .stat-section-title {
-            font-size: 16px; font-weight: 700; color: #003D5C;
-            margin: 20px 0 12px; border-left: 4px solid #00A3A6;
-            padding-left: 12px; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .stats-visuel .stat-card { border-top: 4px solid #2e7d32; }
-        .stats-outil .stat-card { border-top: 4px solid #1565c0; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
-        .running { animation: blink 1.2s ease-in-out infinite; }
     </style>
 </head>
 <body>
@@ -426,9 +291,9 @@
         </div>
         
         <div class="content">
-            <!-- DÉCLARATION DU LOT -->
+            <!-- ÉTAPE 1 : Déclaration du lot -->
             <div class="form-section" id="lotSection">
-                <h2>📦 Déclaration du lot</h2>
+                <h2>📦 Étape 1 : Déclarer un nouveau lot</h2>
                 <form id="lotForm">
                     <div class="form-grid">
                         <div class="form-group">
@@ -437,64 +302,26 @@
                         </div>
                         <div class="form-group">
                             <label for="lotOperateur">Opérateur *</label>
-                            <select id="lotOperateur" required>
-                                <option value="">-- Sélectionner un opérateur --</option>
-                                <option value="Stéphanie">Stéphanie</option>
-                                <option value="Lillian">Lillian</option>
-                                <option value="Stéphania">Stéphania</option>
-                                <option value="Elisabeth">Elisabeth</option>
-                                <option value="Matthieu">Matthieu</option>
-                                <option value="Nicolas">Nicolas</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="lotNumeroAffaire">Numéro affaire *</label>
-                            <input type="text" id="lotNumeroAffaire" placeholder="Ex: A00" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="lotNumeroOF">Numéro OF *</label>
-                            <input type="text" id="lotNumeroOF" placeholder="Ex: OF00" required>
+                            <input type="text" id="lotOperateur" placeholder="Nom de l'opérateur" required>
                         </div>
                         <div class="form-group">
                             <label for="lotReference">Référence du lot *</label>
-                            <input type="text" id="lotReference" placeholder="Ex: SP" required>
+                            <input type="text" id="lotReference" placeholder="Ex: LOT-12345" required>
                         </div>
                         <div class="form-group">
                             <label for="lotQuantite">Quantité de pièces dans le lot *</label>
                             <input type="number" id="lotQuantite" placeholder="Ex: 50, 200..." min="1" required>
                         </div>
                     </div>
-                    <div class="form-grid" style="margin-top: 10px;">
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="lotDescriptionControle">Description du contrôle effectué (commune à toutes les pièces du lot)</label>
-                            <textarea id="lotDescriptionControle" rows="2" placeholder="Ex: Contrôle de l'état de surface, vérification des dimensions critiques..."></textarea>
-                        </div>
-                    </div>
-
-                    <h3 class="section-title" style="margin-top:24px;">Type(s) de contrôle appliqué à ce lot *</h3>
-                    <div class="type-control-selector">
-                        <button type="button" class="type-btn" id="btnTypeVisuel" onclick="toggleType('visuel')">
-                            <span class="type-icon">👁️</span>
-                            <span class="type-label">Contrôle Visuel</span>
-                            <span class="type-desc">Rayures, Bavures, Cornières…</span>
-                        </button>
-                        <button type="button" class="type-btn" id="btnTypeOutil" onclick="toggleType('outil')">
-                            <span class="type-icon">🔧</span>
-                            <span class="type-label">Contrôle à l'aide d'outils</span>
-                            <span class="type-desc">Outils frittés, mesures…</span>
-                        </button>
-                    </div>
-                    <div id="typeError" style="color:#dc3545; font-size:13px; margin-top:-8px; display:none;">⚠️ Veuillez sélectionner au moins un type de contrôle.</div>
-
                     <div style="margin-top: 25px;">
-                        <button type="submit" class="btn btn-primary">Commencer la saisie des pièces</button>
+                        <button type="submit" class="btn btn-primary">➡️ Commencer la saisie des pièces</button>
                     </div>
                 </form>
             </div>
 
-            <!-- SAISIE PAR PIÈCE -->
+            <!-- ÉTAPE 2 : Saisie pièce par pièce -->
             <div class="form-section hidden" id="pieceSection">
-                <h2>⏱️ Saisie des temps par pièce</h2>
+                <h2>⏱️ Étape 2 : Saisie des temps par pièce</h2>
                 
                 <div class="lot-info" id="lotInfo"></div>
                 
@@ -505,9 +332,25 @@
                 <div class="piece-counter" id="pieceCounter"></div>
 
                 <form id="pieceForm">
-                    <h3 class="section-title">⏱️ Temps de contrôle</h3>
-                    <div id="chronosContainer"></div>
+                    <h3 class="section-title">📸 Photo et description du contrôle</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="piecePhoto">Photo de la pièce (optionnel)</label>
+                            <input type="file" id="piecePhoto" accept="image/*" capture="environment">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="descriptionControle">Description du contrôle effectué *</label>
+                            <textarea id="descriptionControle" rows="2" placeholder="Ex: Contrôle de l'état de surface, vérification des dimensions critiques..." required></textarea>
+                        </div>
+                    </div>
 
+                    <h3 class="section-title">⏱️ Temps de contrôle</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="tempsControle">Temps de contrôle (minutes) *</label>
+                            <input type="number" id="tempsControle" step="0.1" placeholder="min" min="0" required>
+                        </div>
+                    </div>
 
                     <div class="form-group" style="margin-top: 20px;">
                         <label for="observations">Observations / Anomalies (optionnel)</label>
@@ -528,6 +371,7 @@
                 <div style="margin-bottom: 15px;">
                     <button onclick="exportToExcel()" class="btn btn-success">📥 Exporter vers Excel avec indicateurs</button>
                     <button onclick="clearAllData()" class="btn btn-secondary" style="background: #dc3545;">🗑️ Effacer toutes les données</button>
+                    <button onclick="migrateOldData()" class="btn btn-secondary" style="background: #f39c12;">🔄 Migrer anciennes données</button>
                 </div>
                 <div class="table-container">
                     <table id="dataTable">
@@ -535,14 +379,10 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Opérateur</th>
-                                <th>Affaire</th>
-                                <th>OF</th>
                                 <th>Référence Lot</th>
-                                <th>Types de contrôle</th>
                                 <th>Pièce N°</th>
-                                <th>Description</th>
-                                <th>Temps Visuel (min)</th>
-                                <th>Temps Outil (min)</th>
+                                <th>Description contrôle</th>
+                                <th>Temps (min)</th>
                                 <th>Observations</th>
                                 <th>Action</th>
                             </tr>
@@ -558,271 +398,115 @@
         let data = [];
         let currentLot = null;
         let currentPieceNumber = 0;
-        let selectedTypes = new Set(); // 'visuel' | 'outil' — choix au niveau du lot
-
-        function toggleType(type) {
-            if (selectedTypes.has(type)) {
-                selectedTypes.delete(type);
-            } else {
-                selectedTypes.add(type);
-            }
-            document.getElementById('btnTypeVisuel').className = 'type-btn' + (selectedTypes.has('visuel') ? ' selected-visuel' : '');
-            document.getElementById('btnTypeOutil').className  = 'type-btn' + (selectedTypes.has('outil')  ? ' selected-outil'  : '');
-            document.getElementById('typeError').style.display = 'none';
-        }
-
-        // --- CHRONOMETRE générique (par suffixe d'ID) ---
-        const chronoState = {};
-
-        function formatTime(secs) {
-            const h = String(Math.floor(secs / 3600)).padStart(2, '0');
-            const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
-            const s = String(secs % 60).padStart(2, '0');
-            return `${h}:${m}:${s}`;
-        }
-
-        function initChrono(id) {
-            chronoState[id] = { interval: null, seconds: 0, running: false };
-        }
-
-        function startChrono(id) {
-            const c = chronoState[id];
-            if (c.running) return;
-            c.running = true;
-            document.getElementById('btnStart_'+id).style.display = 'none';
-            document.getElementById('btnPause_'+id).style.display = 'inline-block';
-            document.getElementById('btnStop_'+id).style.display = 'inline-block';
-            document.getElementById('chronoDisplay_'+id).classList.add('running');
-            document.getElementById('chronoHint_'+id).textContent = '⏱ Chrono en cours...';
-            c.interval = setInterval(() => {
-                c.seconds++;
-                document.getElementById('chronoDisplay_'+id).textContent = formatTime(c.seconds);
-            }, 1000);
-        }
-
-        function pauseChrono(id) {
-            const c = chronoState[id];
-            if (!c.running) {
-                c.running = true;
-                document.getElementById('btnPause_'+id).textContent = '⏸ Pause';
-                document.getElementById('chronoDisplay_'+id).classList.add('running');
-                document.getElementById('chronoHint_'+id).textContent = '⏱ Chrono en cours...';
-                c.interval = setInterval(() => {
-                    c.seconds++;
-                    document.getElementById('chronoDisplay_'+id).textContent = formatTime(c.seconds);
-                }, 1000);
-            } else {
-                clearInterval(c.interval);
-                c.running = false;
-                document.getElementById('btnPause_'+id).textContent = '▶ Reprendre';
-                document.getElementById('chronoDisplay_'+id).classList.remove('running');
-                document.getElementById('chronoHint_'+id).textContent = '⏸ En pause';
-            }
-        }
-
-        function stopChrono(id) {
-            const c = chronoState[id];
-            clearInterval(c.interval);
-            c.running = false;
-            document.getElementById('btnStart_'+id).style.display = 'none';
-            document.getElementById('btnPause_'+id).style.display = 'none';
-            document.getElementById('btnStop_'+id).style.display = 'none';
-            document.getElementById('chronoDisplay_'+id).classList.remove('running');
-            const mins = (c.seconds / 60).toFixed(2);
-            document.getElementById('tempsInput_'+id).value = mins;
-            document.getElementById('chronoHint_'+id).textContent = `✅ ${formatTime(c.seconds)} → ${mins} min`;
-            document.getElementById('manualInput_'+id).value = '';
-            document.getElementById('manualHint_'+id).textContent = 'Ou saisir manuellement ci-dessous';
-            document.getElementById('manualHint_'+id).style.color = '#6c757d';
-        }
-
-        function resetChrono(id) {
-            const c = chronoState[id];
-            clearInterval(c.interval);
-            c.running = false;
-            c.seconds = 0;
-            document.getElementById('chronoDisplay_'+id).textContent = '00:00:00';
-            document.getElementById('chronoDisplay_'+id).classList.remove('running');
-            document.getElementById('btnStart_'+id).style.display = 'inline-block';
-            document.getElementById('btnPause_'+id).style.display = 'none';
-            document.getElementById('btnPause_'+id).textContent = '⏸ Pause';
-            document.getElementById('btnStop_'+id).style.display = 'none';
-            document.getElementById('tempsInput_'+id).value = '';
-            document.getElementById('chronoHint_'+id).textContent = 'Appuyez sur Démarrer pour lancer';
-            if (document.getElementById('manualInput_'+id)) {
-                document.getElementById('manualInput_'+id).value = '';
-                document.getElementById('manualHint_'+id).textContent = 'Ou saisir manuellement ci-dessous';
-                document.getElementById('manualHint_'+id).style.color = '#6c757d';
-            }
-        }
-
-        function onManualInput(id) {
-            const val = parseFloat(document.getElementById('manualInput_'+id).value);
-            if (!isNaN(val) && val > 0) {
-                const c = chronoState[id];
-                if (c.running) { clearInterval(c.interval); c.running = false; document.getElementById('chronoDisplay_'+id).classList.remove('running'); }
-                document.getElementById('tempsInput_'+id).value = val.toFixed(2);
-                const totalSecs = Math.round(val * 60);
-                document.getElementById('manualHint_'+id).textContent = `✅ ${val} min = ${formatTime(totalSecs)}`;
-                document.getElementById('manualHint_'+id).style.color = '#00697A';
-                document.getElementById('chronoHint_'+id).textContent = 'Saisie manuelle utilisée';
-            } else {
-                document.getElementById('tempsInput_'+id).value = '';
-                document.getElementById('manualHint_'+id).textContent = 'Ou saisir manuellement ci-dessous';
-                document.getElementById('manualHint_'+id).style.color = '#6c757d';
-            }
-        }
-
-        function buildChronoBlock(id, label, colorClass) {
-            return `
-            <div class="chrono-block" style="margin-bottom:0; border-color:${colorClass === 'visuel' ? '#2e7d32' : '#1565c0'};">
-                <div style="font-size:13px; font-weight:700; color:${colorClass === 'visuel' ? '#1b5e20' : '#0d47a1'}; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">${label}</div>
-                <div class="chrono-display" id="chronoDisplay_${id}">00:00:00</div>
-                <div class="chrono-buttons">
-                    <button type="button" id="btnStart_${id}" class="btn-chrono-start" onclick="startChrono('${id}')">▶ Démarrer</button>
-                    <button type="button" id="btnPause_${id}" class="btn-chrono-pause" onclick="pauseChrono('${id}')" style="display:none;">⏸ Pause</button>
-                    <button type="button" id="btnStop_${id}" class="btn-chrono-stop" onclick="stopChrono('${id}')" style="display:none;">⏹ Arrêter</button>
-                    <button type="button" class="btn-chrono-reset" onclick="resetChrono('${id}')">↺ Reset</button>
-                </div>
-                <div class="chrono-hint" id="chronoHint_${id}">Appuyez sur Démarrer pour lancer</div>
-                <div style="margin-top:12px; border-top:1px solid #e0e0e0; padding-top:10px;">
-                    <input type="number" id="manualInput_${id}" step="0.1" min="0" placeholder="Saisie manuelle (min)"
-                        style="padding:10px; border:2px solid #d0e8ea; border-radius:8px; font-size:18px; font-weight:700; color:#003D5C; text-align:center; width:100%;"
-                        oninput="onManualInput('${id}')">
-                    <div style="font-size:11px; color:#6c757d; text-align:center; margin-top:4px;" id="manualHint_${id}">Ou saisir manuellement ci-dessous</div>
-                </div>
-                <input type="hidden" id="tempsInput_${id}">
-            </div>`;
-        }
-
-        function buildPieceChronos() {
-            const types = currentLot.typesControle;
-            const hasBoth = types.includes('visuel') && types.includes('outil');
-            let html = `<div style="display:grid; grid-template-columns:${hasBoth ? '1fr 1fr' : '1fr'}; gap:16px; align-items:stretch;">`;
-            if (types.includes('visuel')) {
-                html += buildChronoBlock('visuel', '👁️ Contrôle Visuel', 'visuel');
-                initChrono('visuel');
-            }
-            if (types.includes('outil')) {
-                html += buildChronoBlock('outil', '🔧 Contrôle Outil', 'outil');
-                initChrono('outil');
-            }
-            html += '</div>';
-            document.getElementById('chronosContainer').innerHTML = html;
-        }
-        // --- FIN CHRONOMETRE ---
 
         // Charger les données sauvegardées au démarrage
-        function init() {
-            // Date du jour automatique
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            document.getElementById('lotDate').value = `${yyyy}-${mm}-${dd}`;
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('lotDate').valueAsDate = new Date();
             loadData();
             updateTable();
             updateStats();
-        }
+        });
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
-
+        // Charger les données depuis le stockage local
         function loadData() {
             const savedData = localStorage.getItem('exalta_controle_data');
             if (savedData) {
-                try { data = JSON.parse(savedData); } catch(e) { data = []; }
+                try {
+                    data = JSON.parse(savedData);
+                    console.log('Données chargées:', data.length, 'observations');
+                } catch(e) {
+                    console.error('Erreur de chargement:', e);
+                    data = [];
+                }
             }
         }
 
+        // Sauvegarder les données dans le stockage local
         function saveData() {
-            try { localStorage.setItem('exalta_controle_data', JSON.stringify(data)); }
-            catch(e) { alert('Erreur lors de la sauvegarde des données'); }
+            try {
+                localStorage.setItem('exalta_controle_data', JSON.stringify(data));
+                console.log('Données sauvegardées:', data.length, 'observations');
+            } catch(e) {
+                console.error('Erreur de sauvegarde:', e);
+                alert('Erreur lors de la sauvegarde des données');
+            }
         }
 
-        // LOT : Déclaration
+        // ÉTAPE 1 : Déclarer le lot
         document.getElementById('lotForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            if (selectedTypes.size === 0) {
-                document.getElementById('typeError').style.display = 'block';
-                return;
-            }
+            
             currentLot = {
                 date: document.getElementById('lotDate').value,
                 operateur: document.getElementById('lotOperateur').value.trim(),
-                numeroAffaire: document.getElementById('lotNumeroAffaire').value.trim(),
-                numeroOF: document.getElementById('lotNumeroOF').value.trim(),
                 reference: document.getElementById('lotReference').value.trim(),
-                quantite: parseInt(document.getElementById('lotQuantite').value),
-                descriptionControle: document.getElementById('lotDescriptionControle').value.trim(),
-                typesControle: Array.from(selectedTypes)
+                quantite: parseInt(document.getElementById('lotQuantite').value)
             };
+            
             currentPieceNumber = 1;
-
-            const typesBadges = currentLot.typesControle.map(t =>
-                t === 'visuel' ? '<span class="badge-visuel">👁️ Visuel</span>' : '<span class="badge-outil">🔧 Outil</span>'
-            ).join(' ');
-
+            
+            // Afficher les infos du lot
             document.getElementById('lotInfo').innerHTML = `
                 <h3>📦 ${currentLot.reference}</h3>
                 <p>Opérateur : ${currentLot.operateur} | Date : ${new Date(currentLot.date).toLocaleDateString('fr-FR')} | Total : ${currentLot.quantite} pièces</p>
-                <p style="margin-top:4px;">Affaire : <strong>${currentLot.numeroAffaire}</strong> | OF : <strong>${currentLot.numeroOF}</strong> | ${typesBadges}</p>
-                ${currentLot.descriptionControle ? `<p style="margin-top:6px; font-style:italic; opacity:0.9;">🔍 ${currentLot.descriptionControle}</p>` : ''}
             `;
-            buildPieceChronos();
+            
             updatePieceCounter();
             updateProgressBar();
+            
+            // Basculer vers la saisie des pièces
             document.getElementById('lotSection').classList.add('hidden');
             document.getElementById('pieceSection').classList.remove('hidden');
         });
 
-        // PIÈCE : Saisie
+        // ÉTAPE 2 : Saisir une pièce
         document.getElementById('pieceForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const types = currentLot.typesControle;
-            // Arrêter les chronos qui tournent encore
-            types.forEach(t => { if (chronoState[t] && chronoState[t].running) stopChrono(t); });
-            // Vérifier qu'au moins un temps est renseigné
-            const tempsVisuel = types.includes('visuel') ? parseFloat(document.getElementById('tempsInput_visuel')?.value) || 0 : 0;
-            const tempsOutil  = types.includes('outil')  ? parseFloat(document.getElementById('tempsInput_outil')?.value)  || 0 : 0;
-            if (types.includes('visuel') && tempsVisuel <= 0) {
-                alert('⚠️ Veuillez renseigner le temps du contrôle Visuel.');
-                return;
+            
+            const photoInput = document.getElementById('piecePhoto');
+            let photoData = null;
+            
+            // Si une photo a été uploadée
+            if (photoInput.files && photoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    photoData = event.target.result;
+                    savePieceData(photoData);
+                };
+                reader.readAsDataURL(photoInput.files[0]);
+            } else {
+                savePieceData(null);
             }
-            if (types.includes('outil') && tempsOutil <= 0) {
-                alert('⚠️ Veuillez renseigner le temps du contrôle Outil.');
-                return;
-            }
-            savePieceData(tempsVisuel, tempsOutil);
         });
 
-        function savePieceData(tempsVisuel, tempsOutil) {
+        function savePieceData(photoData) {
             const entry = {
                 date: currentLot.date,
                 operateur: currentLot.operateur,
-                numeroAffaire: currentLot.numeroAffaire,
-                numeroOF: currentLot.numeroOF,
                 lotReference: currentLot.reference,
-                typesControle: currentLot.typesControle,
                 pieceNumber: currentPieceNumber,
-                descriptionControle: currentLot.descriptionControle,
-                tempsVisuel: tempsVisuel,
-                tempsOutil: tempsOutil,
-                tempsTotal: tempsVisuel + tempsOutil,
-                observations: document.getElementById('observations').value.trim()
+                descriptionControle: document.getElementById('descriptionControle').value.trim(),
+                tempsControle: parseFloat(document.getElementById('tempsControle').value) || 0,
+                observations: document.getElementById('observations').value.trim(),
+                photo: photoData
             };
+
+            entry.tempsTotal = entry.tempsControle;
+
             data.push(entry);
             saveData();
             updateTable();
             updateStats();
+            
+            // Pièce suivante
             currentPieceNumber++;
+            
             if (currentPieceNumber > currentLot.quantite) {
+                // Lot terminé
                 alert(`✅ Lot ${currentLot.reference} terminé !\n${currentLot.quantite} pièces contrôlées.`);
                 resetLot();
             } else {
+                // Continuer avec la pièce suivante
                 resetPieceForm();
                 updatePieceCounter();
                 updateProgressBar();
@@ -842,28 +526,19 @@
         }
 
         function resetPieceForm() {
+            document.getElementById('descriptionControle').value = '';
+            document.getElementById('tempsControle').value = '';
             document.getElementById('observations').value = '';
-            // Reset tous les chronos actifs
-            if (currentLot) {
-                currentLot.typesControle.forEach(t => resetChrono(t));
-            }
+            document.getElementById('piecePhoto').value = '';
+            document.getElementById('descriptionControle').focus();
         }
 
         function resetLot() {
-            selectedTypes = new Set();
-            document.getElementById('btnTypeVisuel').className = 'type-btn';
-            document.getElementById('btnTypeOutil').className = 'type-btn';
             currentLot = null;
             currentPieceNumber = 0;
             document.getElementById('lotForm').reset();
             document.getElementById('pieceForm').reset();
-            // Date du jour fiable
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            document.getElementById('lotDate').value = `${yyyy}-${mm}-${dd}`;
-            document.getElementById('chronosContainer').innerHTML = '';
+            document.getElementById('lotDate').valueAsDate = new Date();
             document.getElementById('lotSection').classList.remove('hidden');
             document.getElementById('pieceSection').classList.add('hidden');
         }
@@ -877,26 +552,17 @@
         function updateTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
+            
             data.forEach((entry, index) => {
                 const row = tbody.insertRow();
-                const types = (entry.typesControle || (entry.typeControle ? [entry.typeControle] : []));
-                const typesBadges = types.map(t =>
-                    t === 'visuel' ? '<span class="badge-visuel">👁️ Visuel</span>' : '<span class="badge-outil">🔧 Outil</span>'
-                ).join(' ');
-                // Compat ancien format
-                const tV = entry.tempsVisuel ?? (entry.typeControle === 'visuel' ? entry.tempsControle : 0);
-                const tO = entry.tempsOutil  ?? (entry.typeControle === 'outil'  ? entry.tempsControle : 0);
+                const photoIcon = entry.photo ? '📷' : '';
                 row.innerHTML = `
                     <td>${new Date(entry.date).toLocaleDateString('fr-FR')}</td>
                     <td>${entry.operateur}</td>
-                    <td>${entry.numeroAffaire || '-'}</td>
-                    <td>${entry.numeroOF || '-'}</td>
                     <td>${entry.lotReference}</td>
-                    <td>${typesBadges}</td>
-                    <td>${entry.pieceNumber}</td>
-                    <td>${entry.descriptionControle || '-'}</td>
-                    <td>${tV > 0 ? `<strong>${tV.toFixed(1)} min</strong>` : '-'}</td>
-                    <td>${tO > 0 ? `<strong>${tO.toFixed(1)} min</strong>` : '-'}</td>
+                    <td>${entry.pieceNumber} ${photoIcon}</td>
+                    <td>${entry.descriptionControle}</td>
+                    <td><strong>${entry.tempsControle.toFixed(1)} min</strong></td>
                     <td>${entry.observations || '-'}</td>
                     <td><button class="btn-delete" onclick="deleteEntry(${index})">🗑️</button></td>
                 `;
@@ -909,65 +575,34 @@
                 return;
             }
 
-            const getV = e => e.tempsVisuel ?? (e.typeControle === 'visuel' ? e.tempsControle : 0);
-            const getO = e => e.tempsOutil  ?? (e.typeControle === 'outil'  ? e.tempsControle : 0);
+            const totalObs = data.length;
+            const avgTotal = data.reduce((sum, e) => sum + e.tempsControle, 0) / totalObs;
+            const minTemps = Math.min(...data.map(e => e.tempsControle));
+            const maxTemps = Math.max(...data.map(e => e.tempsControle));
 
-            const withVisuel  = data.filter(e => getV(e) > 0);
-            const withOutil   = data.filter(e => getO(e) > 0);
-            const withBoth    = data.filter(e => getV(e) > 0 && getO(e) > 0);
+            // Compter le nombre de lots uniques
             const lots = new Set(data.map(e => e.lotReference));
 
-            function statBlock(arr, getter, colorClass, borderColor) {
-                if (!arr.length) return `<p style="color:#999; font-size:13px; padding:10px;">Aucune donnée pour ce type.</p>`;
-                const vals = arr.map(getter);
-                const avg = vals.reduce((s,v) => s+v, 0) / vals.length;
-                const min = Math.min(...vals);
-                const max = Math.max(...vals);
-                const tot = vals.reduce((s,v) => s+v, 0);
-                return `<div class="stats ${colorClass}">
-                    <div class="stat-card" style="border-top:4px solid ${borderColor}"><h3>Pièces</h3><div class="value">${arr.length}</div></div>
-                    <div class="stat-card" style="border-top:4px solid ${borderColor}"><h3>Temps moyen</h3><div class="value">${avg.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid ${borderColor}"><h3>Min</h3><div class="value">${min.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid ${borderColor}"><h3>Max</h3><div class="value">${max.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid ${borderColor}"><h3>Total cumulé</h3><div class="value">${(tot/60).toFixed(1)} h</div></div>
-                </div>`;
-            }
-
-            function statBlockBoth(arr) {
-                if (!arr.length) return `<p style="color:#999; font-size:13px; padding:10px;">Aucune donnée pour ce type.</p>`;
-                const totals = arr.map(e => getV(e) + getO(e));
-                const avg = totals.reduce((s,v) => s+v, 0) / totals.length;
-                const min = Math.min(...totals);
-                const max = Math.max(...totals);
-                const tot = totals.reduce((s,v) => s+v, 0);
-                return `<div class="stats">
-                    <div class="stat-card" style="border-top:4px solid #6a1b9a"><h3>Pièces</h3><div class="value">${arr.length}</div></div>
-                    <div class="stat-card" style="border-top:4px solid #6a1b9a"><h3>Temps moyen total</h3><div class="value">${avg.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid #6a1b9a"><h3>Min</h3><div class="value">${min.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid #6a1b9a"><h3>Max</h3><div class="value">${max.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid #6a1b9a"><h3>Total cumulé</h3><div class="value">${(tot/60).toFixed(1)} h</div></div>
-                </div>`;
-            }
-
-            const bothSection = withBoth.length > 0 ? `
-                <div class="stat-section-title" style="margin-top:24px; border-left-color:#6a1b9a;">👁️🔧 Contrôle complet (Visuel + Outil)</div>
-                ${statBlockBoth(withBoth)}
-            ` : '';
-
             document.getElementById('statsContainer').innerHTML = `
-                <div style="background:#f8fbfc; border-radius:12px; padding:24px; margin-bottom:24px; border:1px solid #e0f0f2;">
-                    <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
-                        <div class="stat-card" style="flex:1; min-width:130px;"><h3>Total pièces</h3><div class="value">${data.length}</div></div>
-                        <div class="stat-card" style="flex:1; min-width:130px;"><h3>Lots</h3><div class="value">${lots.size}</div></div>
-                        <div class="stat-card" style="flex:1; min-width:130px;"><h3>👁️ Visuel seul</h3><div class="value" style="color:#2e7d32">${withVisuel.length - withBoth.length}</div></div>
-                        <div class="stat-card" style="flex:1; min-width:130px;"><h3>🔧 Outil seul</h3><div class="value" style="color:#1565c0">${withOutil.length - withBoth.length}</div></div>
-                        ${withBoth.length > 0 ? `<div class="stat-card" style="flex:1; min-width:130px;"><h3>👁️🔧 Complet</h3><div class="value" style="color:#6a1b9a">${withBoth.length}</div></div>` : ''}
-                    </div>
-                    <div class="stat-section-title">👁️ Contrôle Visuel — Rayures, Bavures, Cornières…</div>
-                    ${statBlock(withVisuel, getV, 'stats-visuel', '#2e7d32')}
-                    <div class="stat-section-title" style="margin-top:24px;">🔧 Contrôle à l'aide d'outils frittés</div>
-                    ${statBlock(withOutil, getO, 'stats-outil', '#1565c0')}
-                    ${bothSection}
+                <div class="stat-card">
+                    <h3>Pièces contrôlées</h3>
+                    <div class="value">${totalObs}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Nombre de lots</h3>
+                    <div class="value">${lots.size}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Temps moyen</h3>
+                    <div class="value">${avgTotal.toFixed(1)} min</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Temps minimum</h3>
+                    <div class="value">${minTemps.toFixed(1)} min</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Temps maximum</h3>
+                    <div class="value">${maxTemps.toFixed(1)} min</div>
                 </div>
             `;
         }
@@ -993,109 +628,167 @@
             }
         }
 
+        function migrateOldData() {
+            let migrated = 0;
+            
+            data.forEach(entry => {
+                // Si c'est une ancienne donnée sans typesControle
+                if (!entry.typesControle && !entry.tempsVisuel && !entry.tempsOutil) {
+                    // Demander à l'utilisateur quel type de contrôle c'était
+                    const type = prompt(`Pièce ${entry.pieceNumber} du lot ${entry.lotReference}\nDescription: ${entry.descriptionControle || 'N/A'}\n\nQuel type de contrôle ?\n1 = Visuel\n2 = Outil\n3 = Les deux`);
+                    
+                    if (type === '1') {
+                        entry.typesControle = ['visuel'];
+                        entry.tempsVisuel = entry.tempsControle || 0;
+                        entry.tempsOutil = 0;
+                        migrated++;
+                    } else if (type === '2') {
+                        entry.typesControle = ['outil'];
+                        entry.tempsVisuel = 0;
+                        entry.tempsOutil = entry.tempsControle || 0;
+                        migrated++;
+                    } else if (type === '3') {
+                        entry.typesControle = ['visuel', 'outil'];
+                        // Diviser le temps en deux (ou demander)
+                        const half = (entry.tempsControle || 0) / 2;
+                        entry.tempsVisuel = half;
+                        entry.tempsOutil = half;
+                        migrated++;
+                    }
+                    
+                    // Ajouter les champs manquants
+                    if (!entry.numeroAffaire) entry.numeroAffaire = '';
+                    if (!entry.numeroOF) entry.numeroOF = '';
+                }
+            });
+            
+            if (migrated > 0) {
+                saveData();
+                updateTable();
+                updateStats();
+                alert(`✅ ${migrated} entrées ont été migrées avec succès !`);
+            } else {
+                alert('ℹ️ Aucune donnée à migrer. Toutes vos données sont déjà au bon format.');
+            }
+        }
+
         function exportToExcel() {
-            if (data.length === 0) { alert('Aucune donnée à exporter'); return; }
+            if (data.length === 0) {
+                alert('Aucune donnée à exporter');
+                return;
+            }
 
             const wb = XLSX.utils.book_new();
-            const getV = e => e.tempsVisuel ?? (e.typeControle === 'visuel' ? e.tempsControle : 0);
-            const getO = e => e.tempsOutil  ?? (e.typeControle === 'outil'  ? e.tempsControle : 0);
-            const withVisuel = data.filter(e => getV(e) > 0);
-            const withOutil  = data.filter(e => getO(e) > 0);
 
-            function toRows(arr) {
-                return arr.map(e => {
-                    const types = (e.typesControle || (e.typeControle ? [e.typeControle] : []));
-                    const tV = e.tempsVisuel ?? (e.typeControle === 'visuel' ? e.tempsControle : 0);
-                    const tO = e.tempsOutil  ?? (e.typeControle === 'outil'  ? e.tempsControle : 0);
-                    return {
-                        'Date': new Date(e.date).toLocaleDateString('fr-FR'),
-                        'Opérateur': e.operateur,
-                        'N° Affaire': e.numeroAffaire || '',
-                        'N° OF': e.numeroOF || '',
-                        'Référence Lot': e.lotReference,
-                        'Pièce N°': e.pieceNumber,
-                        'Types contrôle': types.map(t => t === 'visuel' ? 'Visuel' : 'Outil').join(' + '),
-                        'Description': e.descriptionControle || '',
-                        'Temps Visuel (min)': tV || '',
-                        'Temps Outil (min)': tO || '',
-                        'Temps total (min)': (tV + tO).toFixed(2),
-                        'Observations': e.observations || ''
-                    };
-                });
-            }
+            // Feuille 1 : Données brutes
+            const exportData = data.map(entry => ({
+                'Date': new Date(entry.date).toLocaleDateString('fr-FR'),
+                'Opérateur': entry.operateur,
+                'Référence Lot': entry.lotReference,
+                'Pièce N°': entry.pieceNumber,
+                'Description contrôle': entry.descriptionControle,
+                'Temps contrôle (min)': entry.tempsControle,
+                'Observations': entry.observations,
+                'Photo': entry.photo ? 'Oui' : 'Non'
+            }));
 
-            function statsRows(arr, getT, label) {
-                if (!arr.length) return [{ 'Indicateur': 'Aucune donnée', 'Valeur': '', 'Unité': '' }];
-                const vals = arr.map(getT).filter(v => v > 0);
-                if (!vals.length) return [{ 'Indicateur': 'Aucune donnée', 'Valeur': '', 'Unité': '' }];
-                const avg = vals.reduce((s,v) => s+v, 0) / vals.length;
-                const min = Math.min(...vals);
-                const max = Math.max(...vals);
-                const tot = vals.reduce((s,v) => s+v, 0);
-                const lots = new Set(arr.map(e => e.lotReference));
-                return [
-                    { 'Indicateur': `=== ${label} ===`, 'Valeur': '', 'Unité': '' },
-                    { 'Indicateur': 'Pièces', 'Valeur': vals.length, 'Unité': '' },
-                    { 'Indicateur': 'Nombre de lots', 'Valeur': lots.size, 'Unité': '' },
-                    { 'Indicateur': 'Temps moyen / pièce', 'Valeur': avg.toFixed(2), 'Unité': 'min' },
-                    { 'Indicateur': 'Temps minimum', 'Valeur': min.toFixed(2), 'Unité': 'min' },
-                    { 'Indicateur': 'Temps maximum', 'Valeur': max.toFixed(2), 'Unité': 'min' },
-                    { 'Indicateur': 'Temps total cumulé', 'Valeur': tot.toFixed(2), 'Unité': 'min' },
-                    { 'Indicateur': 'Temps total cumulé', 'Valeur': (tot/60).toFixed(2), 'Unité': 'heures' },
-                    { 'Indicateur': '', 'Valeur': '', 'Unité': '' }
-                ];
-            }
+            const ws1 = XLSX.utils.json_to_sheet(exportData);
+            XLSX.utils.book_append_sheet(wb, ws1, "Données");
 
-            // Feuille 1 : Toutes les données
-            const ws1 = XLSX.utils.json_to_sheet(toRows(data));
-            XLSX.utils.book_append_sheet(wb, ws1, "Toutes les données");
+            // Feuille 2 : Indicateurs globaux
+            const totalObs = data.length;
+            const avgTotal = data.reduce((sum, e) => sum + e.tempsControle, 0) / totalObs;
+            const minTemps = Math.min(...data.map(e => e.tempsControle));
+            const maxTemps = Math.max(...data.map(e => e.tempsControle));
+            const totalTemps = data.reduce((sum, e) => sum + e.tempsControle, 0);
 
-            // Feuille 2 : Contrôle Visuel uniquement
-            if (withVisuel.length) {
-                const ws2 = XLSX.utils.json_to_sheet(toRows(withVisuel));
-                XLSX.utils.book_append_sheet(wb, ws2, "Controle Visuel");
-            }
+            const lots = new Set(data.map(e => e.lotReference));
 
-            // Feuille 3 : Contrôle Outil uniquement
-            if (withOutil.length) {
-                const ws3 = XLSX.utils.json_to_sheet(toRows(withOutil));
-                XLSX.utils.book_append_sheet(wb, ws3, "Controle Outil");
-            }
-
-            // Feuille 4 : Indicateurs séparés
             const indicateurs = [
                 { 'Indicateur': 'EXALTA GROUP - Analyse des temps de contrôle final', 'Valeur': '', 'Unité': '' },
                 { 'Indicateur': 'Projet mené par Nicolas Risco', 'Valeur': '', 'Unité': '' },
                 { 'Indicateur': '', 'Valeur': '', 'Unité': '' },
-                ...statsRows(withVisuel, getV, 'CONTRÔLE VISUEL — Rayures, Bavures, Cornières'),
-                ...statsRows(withOutil, getO, 'CONTRÔLE OUTILS FRITTÉS')
+                { 'Indicateur': 'Nombre total de pièces contrôlées', 'Valeur': totalObs, 'Unité': '' },
+                { 'Indicateur': 'Nombre de lots', 'Valeur': lots.size, 'Unité': '' },
+                { 'Indicateur': '', 'Valeur': '', 'Unité': '' },
+                { 'Indicateur': '=== TEMPS DE CONTRÔLE ===', 'Valeur': '', 'Unité': '' },
+                { 'Indicateur': 'Temps moyen par pièce', 'Valeur': avgTotal.toFixed(2), 'Unité': 'min' },
+                { 'Indicateur': 'Temps minimum', 'Valeur': minTemps.toFixed(2), 'Unité': 'min' },
+                { 'Indicateur': 'Temps maximum', 'Valeur': maxTemps.toFixed(2), 'Unité': 'min' },
+                { 'Indicateur': 'Temps total cumulé', 'Valeur': totalTemps.toFixed(2), 'Unité': 'min' },
+                { 'Indicateur': 'Temps total cumulé', 'Valeur': (totalTemps / 60).toFixed(2), 'Unité': 'heures' }
             ];
-            const ws4 = XLSX.utils.json_to_sheet(indicateurs);
-            XLSX.utils.book_append_sheet(wb, ws4, "Indicateurs");
 
-            // Feuille 5 : Analyse par lot
+            const ws2 = XLSX.utils.json_to_sheet(indicateurs);
+            XLSX.utils.book_append_sheet(wb, ws2, "Indicateurs");
+
+            // Feuille 3 : Analyse par lot
             const lotStats = {};
-            data.forEach(e => {
-                const k = e.lotReference;
-                if (!lotStats[k]) lotStats[k] = { operateur: e.operateur, date: e.date, count:0, totV:0, totO:0 };
-                lotStats[k].count++;
-                lotStats[k].totV += getV(e);
-                lotStats[k].totO += getO(e);
+            data.forEach(entry => {
+                if (!lotStats[entry.lotReference]) {
+                    lotStats[entry.lotReference] = {
+                        operateur: entry.operateur,
+                        date: entry.date,
+                        count: 0,
+                        totalVisuel: 0,
+                        totalDimensionnel: 0,
+                        totalAttente: 0,
+                        total: 0
+                    };
+                }
+                lotStats[entry.lotReference].count++;
+                lotStats[entry.lotReference].totalVisuel += entry.tempsControleVisuel;
+                lotStats[entry.lotReference].totalDimensionnel += entry.tempsControleDimensionnel;
+                lotStats[entry.lotReference].totalAttente += entry.tempsAttente;
+                lotStats[entry.lotReference].total += entry.tempsTotal;
             });
-            const parLot = Object.keys(lotStats).map(lot => ({
+
+            const analyseLots = Object.keys(lotStats).map(lot => ({
                 'Référence Lot': lot,
                 'Date': new Date(lotStats[lot].date).toLocaleDateString('fr-FR'),
                 'Opérateur': lotStats[lot].operateur,
-                'Total pièces': lotStats[lot].count,
-                'Tps moy Visuel (min)': lotStats[lot].totV > 0 ? (lotStats[lot].totV / lotStats[lot].count).toFixed(2) : '-',
-                'Tps moy Outil (min)': lotStats[lot].totO > 0 ? (lotStats[lot].totO / lotStats[lot].count).toFixed(2) : '-',
-                'Total Visuel (min)': lotStats[lot].totV.toFixed(2),
-                'Total Outil (min)': lotStats[lot].totO.toFixed(2),
-                'Total cumulé (min)': (lotStats[lot].totV + lotStats[lot].totO).toFixed(2)
+                'Nb pièces': lotStats[lot].count,
+                'Temps moyen/pièce (min)': (lotStats[lot].total / lotStats[lot].count).toFixed(2),
+                'Temps total lot (min)': lotStats[lot].total.toFixed(2),
+                'Temps moyen visuel (min)': (lotStats[lot].totalVisuel / lotStats[lot].count).toFixed(2),
+                'Temps moyen dimensionnel (min)': (lotStats[lot].totalDimensionnel / lotStats[lot].count).toFixed(2),
+                'Temps moyen attente (min)': (lotStats[lot].totalAttente / lotStats[lot].count).toFixed(2)
             }));
-            const ws5 = XLSX.utils.json_to_sheet(parLot);
-            XLSX.utils.book_append_sheet(wb, ws5, "Analyse par lot");
 
+            const ws3 = XLSX.utils.json_to_sheet(analyseLots);
+            XLSX.utils.book_append_sheet(wb, ws3, "Par lot");
+
+            // Feuille 4 : Analyse par opérateur
+            const operateurs = {};
+            data.forEach(entry => {
+                if (!operateurs[entry.operateur]) {
+                    operateurs[entry.operateur] = {
+                        count: 0,
+                        totalVisuel: 0,
+                        totalDimensionnel: 0,
+                        totalAttente: 0,
+                        total: 0
+                    };
+                }
+                operateurs[entry.operateur].count++;
+                operateurs[entry.operateur].totalVisuel += entry.tempsControleVisuel;
+                operateurs[entry.operateur].totalDimensionnel += entry.tempsControleDimensionnel;
+                operateurs[entry.operateur].totalAttente += entry.tempsAttente;
+                operateurs[entry.operateur].total += entry.tempsTotal;
+            });
+
+            const analyseOperateurs = Object.keys(operateurs).map(op => ({
+                'Opérateur': op,
+                'Nb pièces contrôlées': operateurs[op].count,
+                'Temps moyen total (min)': (operateurs[op].total / operateurs[op].count).toFixed(2),
+                'Temps moyen visuel (min)': (operateurs[op].totalVisuel / operateurs[op].count).toFixed(2),
+                'Temps moyen dimensionnel (min)': (operateurs[op].totalDimensionnel / operateurs[op].count).toFixed(2),
+                'Temps moyen attente (min)': (operateurs[op].totalAttente / operateurs[op].count).toFixed(2)
+            }));
+
+            const ws4 = XLSX.utils.json_to_sheet(analyseOperateurs);
+            XLSX.utils.book_append_sheet(wb, ws4, "Par opérateur");
+            
             XLSX.writeFile(wb, `EXALTA_Controle_Final_${new Date().toISOString().split('T')[0]}.xlsx`);
         }
     </script>
