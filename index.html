@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyse Echantillon Controle Final - EXALTA</title>
+    <title>Suivi des Temps de Contrôle Finaux - EXALTA</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -192,13 +192,72 @@
             width: 130px; padding: 12px; border: 2px solid #ffca28; 
             border-radius: 8px; font-size: 16px; font-weight: bold;
         }
+        /* ── TABLEAU ÉCHANTILLON EN TEMPS RÉEL ── */
+        .sample-live {
+            margin-top: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #00A3A6;
+            display: none;
+        }
+        .sample-live-title {
+            background: linear-gradient(135deg, #003D5C, #00697A);
+            color: white;
+            padding: 12px 18px;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+        .sample-live table { width: 100%; border-collapse: collapse; background: white; font-size: 13px; }
+        .sample-live th {
+            background: #e8f4f5;
+            color: #003D5C;
+            padding: 10px 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid #00A3A6;
+        }
+        .sample-live td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e8f4f5;
+            color: #333;
+        }
+        .sample-live tr:last-child td { border-bottom: none; }
+        .sample-live tr.piece-row:hover { background: #f0f9fa; }
+        .sample-live td.total-cell { font-weight: 700; color: #003D5C; }
+        .sample-live tr.avg-row td {
+            background: linear-gradient(135deg, #003D5C, #00697A);
+            color: white;
+            font-weight: 700;
+            border-top: 2px solid #00A3A6;
+        }
+        .piece-badge {
+            display: inline-block;
+            background: #00A3A6;
+            color: white;
+            border-radius: 50%;
+            width: 26px; height: 26px;
+            line-height: 26px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .current-badge {
+            background: #f39c12;
+            animation: pulse-badge 1s ease-in-out infinite;
+        }
+        @keyframes pulse-badge { 0%,100%{opacity:1} 50%{opacity:0.6} }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔬 Analyse d'Échantillon et Gains KITOV</h1>
-            <div class="subtitle">Optimisation des processus de contrôle qualité - EXALTA Group</div>
+            <h1>⏱️ Suivi des Temps de Contrôle Finaux</h1>
+            <div class="subtitle">Mesure des temps de contrôle des pièces - EXALTA Group</div>
         </div>
         
         <div class="content">
@@ -242,7 +301,33 @@
                 </form>
             </div>
 
-            <!-- SECTION PIECES -->
+            <!-- SECTION INSTALLATION (avant les pieces) -->
+            <div class="form-section hidden" id="installSection">
+                <h2>🔧 1ère Installation des Outils</h2>
+                <div class="info-panel" id="lotInfoDisplay2"></div>
+                
+                <div style="background: linear-gradient(135deg, #fff8e1, #fff9c4); border: 2px solid #ffd54f; border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+                    <p style="color: #5d4037; margin-bottom: 15px; font-size: 15px;">
+                        <strong>⚠️ Cette opération n'est faite qu'une seule fois au début du lot</strong>
+                    </p>
+                    
+                    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                        <strong style="font-size: 15px;">Chronomètre :</strong>
+                        <span class="field-chrono-display" id="cd_install">00:00</span>
+                        <button type="button" class="btn-chrono btn-chrono-start" onclick="startFieldChrono('install')">▶ START</button>
+                        <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('install')">⏹ STOP</button>
+                        <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('install')">↻ Reset</button>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <input type="number" step="0.1" min="0" id="lotInstall" value="0" placeholder="min" style="width: 120px; padding: 10px; border: 2px solid #ffca28; border-radius: 6px; font-size: 15px; font-weight: bold;">
+                    </div>
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <button type="button" class="btn btn-primary" onclick="startPieceMeasurement()">➡️ Commencer la mesure des pièces</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelLot()">❌ Annuler</button>
+                </div>
+            </div>
             <div class="form-section hidden" id="pieceSection">
                 <h2>⏱️ Saisie des Temps par Pièce (en minutes)</h2>
                 <div class="info-panel" id="lotInfoDisplay"></div>
@@ -251,7 +336,11 @@
                 <div class="legend">
                     <strong style="color:#dc3545;">🔴 Fond Rouge :</strong> Temps incompressibles (maintien manuel) &nbsp;|&nbsp;
                     <strong style="color:#28a745;">🟢 Fond Vert :</strong> Temps automatisables (remplacés par KITOV)<br>
-                    <strong>💡 Astuce :</strong> Utilisez les chronos pour mesurer précisément chaque étape !
+                    <strong>💡 Conversion temps :</strong> 
+                    <span style="font-family: monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">
+                    30 sec = 0,50 min &nbsp;|&nbsp; 45 sec = 0,75 min &nbsp;|&nbsp; 1min30 = 1,50 min
+                    </span>
+                    <br><strong>📝 Note :</strong> Les chronomètres convertissent automatiquement les secondes en minutes (ex: vous mesurez 30 sec → affiché 0,50 min)
                 </div>
 
                 <form id="pieceForm">
@@ -319,19 +408,7 @@
 
                         <!-- 6 -->
                         <div class="form-group seq-item auto-bg">
-                            <label>6️⃣ 1ère installation outils</label>
-                            <input type="number" step="0.01" min="0" id="t_install" placeholder="min">
-                            <div class="field-chrono">
-                                <span class="field-chrono-display" id="cd_install">00:00</span>
-                                <button type="button" class="btn-chrono btn-chrono-start" onclick="startFieldChrono('install')">▶ START</button>
-                                <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('install')">⏹ STOP</button>
-                                <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('install')">↻</button>
-                            </div>
-                        </div>
-
-                        <!-- 7 -->
-                        <div class="form-group seq-item auto-bg">
-                            <label>7️⃣ Temps Outil</label>
+                            <label>6️⃣ Temps Outil</label>
                             <input type="number" step="0.01" min="0" id="t_outil" placeholder="min">
                             <div class="field-chrono">
                                 <span class="field-chrono-display" id="cd_outil">00:00</span>
@@ -348,17 +425,52 @@
                         <button type="button" class="btn btn-secondary" onclick="cancelLot()">❌ Annuler</button>
                     </div>
                 </form>
+
+                <!-- TABLEAU TEMPS RÉEL DES PIÈCES MESURÉES -->
+                <div class="sample-live" id="sampleLiveTable">
+                    <div class="sample-live-title">📋 Pièces mesurées — Échantillon en cours</div>
+                    <div style="overflow-x:auto;">
+                        <table id="sampleTable">
+                            <thead>
+                                <tr>
+                                    <th>Pièce</th>
+                                    <th>1️⃣ Rayures / Aspect</th>
+                                    <th>2️⃣ Manip + Fonc.</th>
+                                    <th>3️⃣ Dessous pièce</th>
+                                    <th>4️⃣ Agencement</th>
+                                    <th>5️⃣ Marquage</th>
+                                    <th>6️⃣ Temps Outil</th>
+                                    <th>TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sampleTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <!-- SECTION RAPPORT -->
             <div class="redaction-section hidden" id="redactionSection">
-                <h2>📝 Rédaction du Rapport</h2>
+                <h2>📝 Rédaction du Rapport & Données Lot</h2>
                 <div class="redaction-hint">
-                    ✅ Toutes les pièces ont été mesurées ! Rédigez maintenant le rapport final, puis saisissez le temps que vous avez mis.
-                    Vous pouvez utiliser le chronomètre ci-dessous pour le mesurer précisément.
+                    ✅ Toutes les pièces ont été mesurées ! Maintenant saisissez les données au niveau du lot :
                 </div>
 
                 <div style="margin-bottom: 25px;">
+                    <h3 style="color: #5d4037; margin-bottom: 15px; font-size: 16px;">⏱️ 1ère Installation des Outils (une seule fois pour le lot)</h3>
+                    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                        <span class="field-chrono-display" id="cd_install">00:00</span>
+                        <button type="button" class="btn-chrono btn-chrono-start" onclick="startFieldChrono('install')">▶ START</button>
+                        <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('install')">⏹ STOP</button>
+                        <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('install')">↻ Reset</button>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <input type="number" step="0.1" min="0" id="lotInstall" value="0" placeholder="min" style="width: 120px; padding: 10px; border: 2px solid #ffca28; border-radius: 6px; font-size: 15px; font-weight: bold;">
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid #ffb300; padding-top: 20px; margin-bottom: 20px;">
+                    <h3 style="color: #5d4037; margin-bottom: 15px; font-size: 16px;">📋 Rédaction du Rapport</h3>
                     <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                         <strong style="font-size: 15px;">Chronomètre rapport :</strong>
                         <span class="field-chrono-display" id="cd_rapport">00:00</span>
@@ -366,11 +478,9 @@
                         <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('rapport')">⏹ STOP</button>
                         <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('rapport')">↻ Reset</button>
                     </div>
-                </div>
-
-                <div class="redaction-row">
-                    <label>⏱️ Temps de rédaction rapport (min/lot)</label>
-                    <input type="number" step="0.1" min="0" id="lotRedaction" value="0" placeholder="min">
+                    <div style="margin-top: 10px;">
+                        <input type="number" step="0.1" min="0" id="lotRedaction" value="0" placeholder="min" style="width: 120px; padding: 10px; border: 2px solid #ffca28; border-radius: 6px; font-size: 15px; font-weight: bold;">
+                    </div>
                 </div>
 
                 <div style="margin-top: 25px;">
@@ -381,7 +491,7 @@
 
             <!-- TABLEAU RESULTATS -->
             <div class="form-section">
-                <h2>📊 Résultats Agrégés & Comparaison KITOV</h2>
+                <h2>📊 Toutes les Données Mesurées</h2>
                 <div style="margin-bottom: 20px;">
                     <button class="btn btn-success" onclick="exportToExcel()">📥 Exporter vers Excel</button>
                     <button class="btn btn-danger" onclick="clearData()">🗑️ Effacer l'historique</button>
@@ -394,6 +504,7 @@
                                 <th>OF</th>
                                 <th>Ref</th>
                                 <th>QT</th>
+                                <th>Pièce N°</th>
                                 <th>Rayures</th>
                                 <th>Manip+Fonc</th>
                                 <th>Dessous</th>
@@ -401,12 +512,7 @@
                                 <th>Marquage</th>
                                 <th>Install</th>
                                 <th>Outil</th>
-                                <th>Tps/Fritté</th>
-                                <th>Tps Moy/pc</th>
-                                <th>Tps Total</th>
                                 <th>Redac Rapp</th>
-                                <th>Gain/pc</th>
-                                <th>Gain Lot</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody"></tbody>
@@ -422,9 +528,10 @@
         let currentPiece = 1;
         let sampleData = [];
         let pendingFinalData = null;
+        let installTime = 0;
 
         const chronos = {};
-        const CHAMP_IDS = ['rayures','manip','dessous','agencement','marquage','install','outil','rapport'];
+        const CHAMP_IDS = ['rayures','manip','dessous','agencement','marquage','outil','install','rapport'];
 
         function getOrCreateChrono(key) {
             if (!chronos[key]) chronos[key] = { interval: null, secs: 0 };
@@ -456,11 +563,11 @@
             clearInterval(c.interval);
             c.interval = null;
 
-            const inputId = key === 'rapport' ? 'lotRedaction' : 't_' + key;
+            const inputId = key === 'rapport' ? 'lotRedaction' : (key === 'install' ? 'lotInstall' : 't_' + key);
             const input = document.getElementById(inputId);
             if (input) {
-                const minutes = parseFloat((c.secs / 60).toFixed(2));
-                input.value = minutes;
+                const minutes = c.secs / 60;  // Conversion directe en minutes
+                input.value = minutes.toFixed(2);  // 0.50 = 30 secondes
             }
             const el = document.getElementById('cd_' + key);
             if (el) { el.classList.remove('running'); el.classList.add('done'); }
@@ -492,7 +599,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('lotDate').valueAsDate = new Date();
+            const d = document.getElementById('lotDate');
+            if (d) d.valueAsDate = new Date();
             renderTable();
         });
 
@@ -510,6 +618,8 @@
             };
             sampleData = [];
             currentPiece = 1;
+            document.getElementById('sampleLiveTable').style.display = 'none';
+            document.getElementById('sampleTableBody').innerHTML = '';
 
             document.getElementById('lotInfoDisplay').innerHTML = `
                 <strong>Référence:</strong> ${currentLot.ref} | <strong>OF:</strong> ${currentLot.of} | 
@@ -522,6 +632,49 @@
             updatePieceUI();
         });
 
+        function renderSampleLive() {
+            if (sampleData.length === 0) {
+                document.getElementById('sampleLiveTable').style.display = 'none';
+                return;
+            }
+            document.getElementById('sampleLiveTable').style.display = 'block';
+            const tbody = document.getElementById('sampleTableBody');
+            const fields = ['rayures','manip','dessous','agencement','marquage','outil'];
+            
+            let rows = '';
+            sampleData.forEach((p, i) => {
+                const total = fields.reduce((s, f) => s + (p[f]||0), 0);
+                rows += `<tr class="piece-row">
+                    <td><span class="piece-badge">${i+1}</span></td>
+                    ${fields.map(f => `<td>${p[f] > 0 ? p[f].toFixed(2)+' min' : '<span style="color:#ccc">—</span>'}</td>`).join('')}
+                    <td class="total-cell">${total.toFixed(2)} min</td>
+                </tr>`;
+            });
+
+            // Ligne "pièce en cours" si pas terminé
+            if (sampleData.length < currentLot.echantillon) {
+                rows += `<tr class="piece-row">
+                    <td><span class="piece-badge current-badge">${sampleData.length+1}</span></td>
+                    ${fields.map(() => `<td style="color:#f39c12; font-style:italic;">en cours…</td>`).join('')}
+                    <td style="color:#f39c12; font-style:italic;">—</td>
+                </tr>`;
+            }
+
+            // Ligne moyenne si ≥ 2 pièces
+            if (sampleData.length >= 2) {
+                const n = sampleData.length;
+                const avgFields = fields.map(f => sampleData.reduce((s,p) => s+(p[f]||0), 0) / n);
+                const avgTotal = avgFields.reduce((s,v) => s+v, 0);
+                rows += `<tr class="avg-row">
+                    <td>Ø MOY.</td>
+                    ${avgFields.map(v => `<td>${v.toFixed(2)} min</td>`).join('')}
+                    <td>${avgTotal.toFixed(2)} min</td>
+                </tr>`;
+            }
+
+            tbody.innerHTML = rows;
+        }
+
         function updatePieceUI() {
             document.getElementById('pieceProgress').textContent = `Pièce ${currentPiece} / ${currentLot.echantillon}`;
             document.getElementById('pieceForm').reset();
@@ -533,6 +686,17 @@
             }
         }
 
+        function startPieceMeasurement() {
+            installTime = parseFloat(document.getElementById('lotInstall').value) || 0;
+            if (installTime <= 0) {
+                alert('⚠️ Veuillez mesurer le temps d\'installation des outils');
+                return;
+            }
+            document.getElementById('installSection').classList.add('hidden');
+            document.getElementById('pieceSection').classList.remove('hidden');
+            updatePieceUI();
+        }
+
         document.getElementById('pieceForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const pieceTimes = {
@@ -541,10 +705,18 @@
                 dessous:    parseFloat(document.getElementById('t_dessous').value) || 0,
                 agencement: parseFloat(document.getElementById('t_agencement').value) || 0,
                 marquage:   parseFloat(document.getElementById('t_marquage').value) || 0,
-                install:    parseFloat(document.getElementById('t_install').value) || 0,
-                outil:      parseFloat(document.getElementById('t_outil').value) || 0
+                outil:      parseFloat(document.getElementById('t_outil').value) || 0,
+                install:    0
             };
+
+            const hasTime = Object.values(pieceTimes).some(v => v > 0);
+            if (!hasTime) {
+                alert('⚠️ Veuillez renseigner au moins un temps avant de continuer.');
+                return;
+            }
+
             sampleData.push(pieceTimes);
+            renderSampleLive();
 
             if (currentPiece < currentLot.echantillon) {
                 currentPiece++;
@@ -571,38 +743,54 @@
 
         function finalizeWithRedaction() {
             const redaction = parseFloat(document.getElementById('lotRedaction').value) || 0;
-            currentLot.redaction = redaction;
+            
+            if (redaction <= 0) {
+                alert('⚠️ Veuillez mesurer le temps de rédaction du rapport');
+                return;
+            }
 
-            const avgs = pendingFinalData.avgs;
-            const moyIncomp = avgs.rayures + avgs.manip + avgs.dessous;
-            const moyAuto = avgs.agencement + avgs.marquage + avgs.install + avgs.outil;
-            const moyTotalPiece = moyIncomp + moyAuto;
+            console.log('Finalizing with redaction:', redaction);
+            console.log('Install time:', installTime);
+            console.log('Sample data pieces:', sampleData.length);
 
-            const tpsOutilFritte = currentLot.nbIs > 0 ? (avgs.outil / currentLot.nbIs) : 0;
-            const tempsTotalExtrapole = (moyTotalPiece * currentLot.qt) + redaction;
+            // Enregistrer chaque pièce individuellement
+            sampleData.forEach((pieceTimes, index) => {
+                const finalEntry = {
+                    date: currentLot.date,
+                    of: currentLot.of,
+                    ref: currentLot.ref,
+                    qt: currentLot.qt,
+                    nbIs: currentLot.nbIs,
+                    gamme: currentLot.gamme,
+                    pieceNumber: index + 1,
+                    rayures: pieceTimes.rayures,
+                    manip: pieceTimes.manip,
+                    dessous: pieceTimes.dessous,
+                    agencement: pieceTimes.agencement,
+                    marquage: pieceTimes.marquage,
+                    outil: pieceTimes.outil,
+                    install: installTime,
+                    redaction: redaction
+                };
+                globalData.push(finalEntry);
+                console.log('Added entry:', finalEntry);
+            });
 
-            const gainPiece = moyAuto - 3;
-            const gainLot = gainPiece * currentLot.qt;
-
-            const finalEntry = {
-                ...currentLot,
-                moyennes: avgs,
-                tpsOutilFritte,
-                moyTotalPiece,
-                tempsTotalExtrapole,
-                gainPiece,
-                gainLot
-            };
-
-            globalData.push(finalEntry);
             localStorage.setItem('exalta_kitov_data', JSON.stringify(globalData));
+            console.log('Data saved. Total entries:', globalData.length);
 
             document.getElementById('redactionSection').classList.add('hidden');
+            document.getElementById('installSection').classList.add('hidden');
+            document.getElementById('pieceSection').classList.add('hidden');
             document.getElementById('lotSection').classList.remove('hidden');
             document.getElementById('lotForm').reset();
             document.getElementById('lotDate').valueAsDate = new Date();
             pendingFinalData = null;
+            sampleData = [];
+            installTime = 0;
             renderTable();
+            
+            alert('✅ Lot enregistré avec succès ! ' + globalData.length + ' pièces au total.');
         }
 
         function cancelLot() {
@@ -628,25 +816,20 @@
             tbody.innerHTML = '';
             globalData.forEach((row) => {
                 const tr = document.createElement('tr');
-                const gainClass = row.gainLot >= 0 ? 'gain-positif' : 'gain-negatif';
                 tr.innerHTML = `
                     <td>${new Date(row.date).toLocaleDateString('fr-FR')}</td>
                     <td>${row.of}</td>
                     <td>${row.ref}</td>
                     <td>${row.qt}</td>
-                    <td style="background:#ffe8e8;">${row.moyennes.rayures.toFixed(2)}</td>
-                    <td style="background:#ffe8e8;">${row.moyennes.manip.toFixed(2)}</td>
-                    <td style="background:#ffe8e8;">${row.moyennes.dessous.toFixed(2)}</td>
-                    <td style="background:#e8f5e9;">${row.moyennes.agencement.toFixed(2)}</td>
-                    <td style="background:#e8f5e9;">${row.moyennes.marquage.toFixed(2)}</td>
-                    <td style="background:#e8f5e9;">${row.moyennes.install.toFixed(2)}</td>
-                    <td style="background:#e8f5e9;">${row.moyennes.outil.toFixed(2)}</td>
-                    <td>${row.tpsOutilFritte.toFixed(2)}</td>
-                    <td><strong>${row.moyTotalPiece.toFixed(2)}</strong></td>
-                    <td>${row.tempsTotalExtrapole.toFixed(2)}</td>
-                    <td><strong>${row.redaction.toFixed(2)}</strong></td>
-                    <td class="${row.gainPiece >= 0 ? 'gain-positif' : 'gain-negatif'}">${row.gainPiece.toFixed(2)}</td>
-                    <td class="${gainClass}"><strong>${row.gainLot.toFixed(2)}</strong></td>
+                    <td>${row.pieceNumber}</td>
+                    <td>${row.rayures.toFixed(2)}</td>
+                    <td>${row.manip.toFixed(2)}</td>
+                    <td>${row.dessous.toFixed(2)}</td>
+                    <td>${row.agencement.toFixed(2)}</td>
+                    <td>${row.marquage.toFixed(2)}</td>
+                    <td>${row.install.toFixed(2)}</td>
+                    <td>${row.outil.toFixed(2)}</td>
+                    <td>${row.redaction.toFixed(2)}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -659,28 +842,22 @@
                 "N° OF": r.of,
                 "Référence produit": r.ref,
                 "QT": r.qt,
-                "Taille Échantillon": r.echantillon,
                 "Nb IS Frittés": r.nbIs,
-                "Temps gamme (min)": r.gamme,
-                "Temps Ctrl visuel (Rayures,aspect)": r.moyennes.rayures.toFixed(2),
-                "Temps Manipulation + fonctionnel": r.moyennes.manip.toFixed(2),
-                "Temps de contrôle dessous pièce": r.moyennes.dessous.toFixed(2),
-                "Temps Ctrl visuel (agencement)": r.moyennes.agencement.toFixed(2),
-                "Temps Ctrl marquage (min)": r.moyennes.marquage.toFixed(2),
-                "1ère installation des outils": r.moyennes.install.toFixed(2),
-                "Temps Outil (min)": r.moyennes.outil.toFixed(2),
-                "Temps moyen par outil fritté": r.tpsOutilFritte.toFixed(2),
-                "Temps moyen Ctrl total par pièce (min)": r.moyTotalPiece.toFixed(2),
-                "Temps total extrapolé": r.tempsTotalExtrapole.toFixed(2),
-                "Temps de rédaction rapport": r.redaction.toFixed(2),
-                "Gains/pièce (vs KITOV 3min)": r.gainPiece.toFixed(2),
-                "Gains potentiel lot": r.gainLot.toFixed(2),
-                "Statut Gain": r.gainLot >= 0 ? "POSITIF ✓" : "NÉGATIF ✗"
+                "Temps gamme (min)": r.gamme.toString().replace('.', ','),
+                "Pièce N°": r.pieceNumber,
+                "Temps Ctrl visuel (Rayures,aspect) (min)": r.rayures.toFixed(2).replace('.', ','),
+                "Temps Manipulation + fonctionnel (min)": r.manip.toFixed(2).replace('.', ','),
+                "Temps de contrôle dessous pièce (min)": r.dessous.toFixed(2).replace('.', ','),
+                "Temps Ctrl visuel (agencement) (min)": r.agencement.toFixed(2).replace('.', ','),
+                "Temps Ctrl marquage (min)": r.marquage.toFixed(2).replace('.', ','),
+                "Temps Outil (min)": r.outil.toFixed(2).replace('.', ','),
+                "1ère installation des outils (min)": r.install.toFixed(2).replace('.', ','),
+                "Temps de rédaction rapport (min)": r.redaction.toFixed(2).replace('.', ',')
             }));
             const ws = XLSX.utils.json_to_sheet(exportFormat);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Analyse_KITOV");
-            XLSX.writeFile(wb, `EXALTA_Analyse_KITOV_${new Date().toISOString().split('T')[0]}.xlsx`);
+            XLSX.utils.book_append_sheet(wb, ws, "Suivi_Temps_Controle");
+            XLSX.writeFile(wb, `EXALTA_Suivi_Temps_Controle_${new Date().toISOString().split('T')[0]}.xlsx`);
         }
     </script>
 </body>
