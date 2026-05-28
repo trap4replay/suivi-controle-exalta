@@ -743,54 +743,46 @@
 
         function finalizeWithRedaction() {
             const redaction = parseFloat(document.getElementById('lotRedaction').value) || 0;
-            
-            if (redaction <= 0) {
-                alert('⚠️ Veuillez mesurer le temps de rédaction du rapport');
-                return;
-            }
-
-            console.log('Finalizing with redaction:', redaction);
-            console.log('Install time:', installTime);
-            console.log('Sample data pieces:', sampleData.length);
+            const install   = parseFloat(document.getElementById('lotInstall').value)   || 0;
 
             // Enregistrer chaque pièce individuellement
             sampleData.forEach((pieceTimes, index) => {
                 const finalEntry = {
-                    date: currentLot.date,
-                    of: currentLot.of,
-                    ref: currentLot.ref,
-                    qt: currentLot.qt,
-                    nbIs: currentLot.nbIs,
-                    gamme: currentLot.gamme,
+                    date:       currentLot.date,
+                    of:         currentLot.of,
+                    ref:        currentLot.ref,
+                    qt:         currentLot.qt,
+                    nbIs:       currentLot.nbIs,
+                    gamme:      currentLot.gamme,
                     pieceNumber: index + 1,
-                    rayures: pieceTimes.rayures,
-                    manip: pieceTimes.manip,
-                    dessous: pieceTimes.dessous,
-                    agencement: pieceTimes.agencement,
-                    marquage: pieceTimes.marquage,
-                    outil: pieceTimes.outil,
-                    install: installTime,
-                    redaction: redaction
+                    rayures:    pieceTimes.rayures    || 0,
+                    manip:      pieceTimes.manip       || 0,
+                    dessous:    pieceTimes.dessous     || 0,
+                    agencement: pieceTimes.agencement  || 0,
+                    marquage:   pieceTimes.marquage    || 0,
+                    outil:      pieceTimes.outil        || 0,
+                    install:    install,
+                    redaction:  redaction
                 };
                 globalData.push(finalEntry);
-                console.log('Added entry:', finalEntry);
             });
 
             localStorage.setItem('exalta_kitov_data', JSON.stringify(globalData));
-            console.log('Data saved. Total entries:', globalData.length);
 
+            // Reset UI
             document.getElementById('redactionSection').classList.add('hidden');
-            document.getElementById('installSection').classList.add('hidden');
             document.getElementById('pieceSection').classList.add('hidden');
             document.getElementById('lotSection').classList.remove('hidden');
             document.getElementById('lotForm').reset();
             document.getElementById('lotDate').valueAsDate = new Date();
+            document.getElementById('sampleLiveTable').style.display = 'none';
+            document.getElementById('sampleTableBody').innerHTML = '';
             pendingFinalData = null;
             sampleData = [];
             installTime = 0;
             renderTable();
-            
-            alert('✅ Lot enregistré avec succès ! ' + globalData.length + ' pièces au total.');
+
+            alert('✅ Lot enregistré ! ' + sampleData.length + ' → total : ' + globalData.length + ' pièces.');
         }
 
         function cancelLot() {
