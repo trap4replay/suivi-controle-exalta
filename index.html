@@ -3,549 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suivi Temps de Contrôle Final - EXALTA</title>
+    <title>Analyse Echantillon Controle Final - EXALTA</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #003D5C 0%, #008B8D 100%);
-            padding: 20px;
-            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #003D5C 0%, #005a7a 50%, #008B8D 100%);
+            padding: 20px; min-height: 100vh; color: #333;
         }
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
+            max-width: 1600px; margin: 0 auto; background: white;
+            border-radius: 20px; box-shadow: 0 25px 70px rgba(0,0,0,0.4); overflow: hidden;
         }
         .header {
             background: linear-gradient(135deg, #003D5C 0%, #00697A 50%, #00A3A6 100%);
-            color: white;
-            padding: 40px 30px;
-            position: relative;
-            overflow: hidden;
+            color: white; padding: 40px; position: relative; overflow: hidden;
         }
         .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 300px;
-            height: 100%;
-            background: rgba(0, 163, 166, 0.1);
-            transform: skewX(-15deg);
-        }
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 8px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .header .subtitle {
-            font-size: 16px;
-            opacity: 0.95;
-            font-weight: 500;
-        }
-        .header .company {
-            font-size: 14px;
-            opacity: 0.85;
-            margin-top: 5px;
-        }
-        .content {
-            padding: 30px;
-        }
-        .form-section {
-            background: #f8fbfc;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid #e0f0f2;
-        }
-        .form-section h2 {
-            color: #003D5C;
-            margin-bottom: 25px;
-            font-size: 22px;
-            border-bottom: 3px solid #00A3A6;
-            padding-bottom: 12px;
-            font-weight: 600;
-        }
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #003D5C;
-            font-size: 14px;
-        }
-        input, select, textarea {
-            padding: 12px;
-            border: 2px solid #d0e8ea;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-            background: white;
-        }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #00A3A6;
-            box-shadow: 0 0 0 3px rgba(0, 163, 166, 0.1);
-        }
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-right: 10px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #00697A 0%, #00A3A6 100%);
-            color: white;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 163, 166, 0.3);
-        }
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-        .btn-success {
-            background: linear-gradient(135deg, #00A3A6 0%, #00C9CC 100%);
-            color: white;
-        }
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 201, 204, 0.3);
-        }
-        .table-container {
-            overflow-x: auto;
-            margin-top: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-        th {
-            background: linear-gradient(135deg, #003D5C 0%, #00697A 100%);
-            color: white;
-            padding: 16px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #e8f4f5;
-            font-size: 14px;
-            color: #333;
-        }
-        tr:hover {
-            background: #f0f9fa;
-        }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #003D5C 0%, #00697A 50%, #00A3A6 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 61, 92, 0.25);
-            position: relative;
-            overflow: hidden;
-        }
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.05);
+            content: ''; position: absolute; top: -50%; right: -10%; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
             border-radius: 50%;
         }
-        .stat-card h3 {
-            font-size: 13px;
-            opacity: 0.9;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .header h1 { 
+            font-size: 32px; margin-bottom: 8px; font-weight: 700; 
+            position: relative; z-index: 1; letter-spacing: -0.5px;
+        }
+        .header .subtitle { 
+            font-size: 16px; opacity: 0.95; position: relative; z-index: 1;
             font-weight: 500;
         }
-        .stat-card .value {
-            font-size: 36px;
+        .content { padding: 40px; }
+        .form-section {
+            background: linear-gradient(to bottom, #f8fbfc, #ffffff);
+            border-radius: 16px; padding: 30px;
+            margin-bottom: 30px; border: 1px solid #e0f0f2;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .form-section h2 {
+            color: #003D5C; margin-bottom: 25px; font-size: 22px;
+            border-bottom: 3px solid #00A3A6; padding-bottom: 12px;
             font-weight: 700;
-            position: relative;
-            z-index: 1;
         }
-        .btn-delete {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s;
+        .form-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;
         }
-        .btn-delete:hover {
-            background: #c82333;
-            transform: scale(1.05);
+        .form-group { display: flex; flex-direction: column; }
+        label { 
+            font-weight: 600; margin-bottom: 8px; color: #003D5C; font-size: 13px;
+            text-transform: uppercase; letter-spacing: 0.3px;
         }
-        h3.section-title {
-            margin: 25px 0 15px 0;
-            color: #003D5C;
-            font-size: 18px;
-            font-weight: 600;
+        input, select {
+            padding: 12px; border: 2px solid #d0e8ea; border-radius: 8px; font-size: 14px;
+            transition: all 0.2s; background: white;
         }
-        .hidden {
-            display: none;
+        input:focus, select:focus { 
+            outline: none; border-color: #00A3A6; 
+            box-shadow: 0 0 0 3px rgba(0,163,166,0.1);
         }
-        .progress-bar {
-            background: #e0f0f2;
-            height: 30px;
-            border-radius: 15px;
-            overflow: hidden;
-            margin: 20px 0;
+
+        /* Sequence avec effet carte */
+        .input-sequence {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 25px;
         }
-        .progress-fill {
-            background: linear-gradient(135deg, #00697A 0%, #00A3A6 100%);
-            height: 100%;
-            transition: width 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
+        .seq-item { 
+            padding: 18px; border-radius: 12px; border: 2px solid #ddd;
+            transition: all 0.3s; position: relative; overflow: hidden;
         }
-        .lot-info {
-            background: linear-gradient(135deg, #003D5C 0%, #00697A 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+        .seq-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
         }
-        .lot-info h3 {
-            margin-bottom: 10px;
-            font-size: 18px;
+        .incomp-bg { 
+            background: linear-gradient(135deg, #fff5f5, #ffe8e8); 
+            border-color: #dc3545;
         }
-        .lot-info p {
-            font-size: 14px;
-            opacity: 0.9;
+        .auto-bg { 
+            background: linear-gradient(135deg, #f0fff4, #e8f5e9); 
+            border-color: #28a745;
         }
-        .piece-counter {
-            background: #00A3A6;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 20px;
+        .legend { 
+            font-size: 12px; margin-bottom: 20px; padding: 15px; 
+            background: linear-gradient(to right, #fff9e6, #ffffff); 
+            border-radius: 10px; border-left: 4px solid #00A3A6;
         }
-        .chrono-block {
-            background: #f0f9fa;
-            border: 2px solid #d0e8ea;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        .chrono-display {
-            font-size: 64px;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-            color: #003D5C;
-            letter-spacing: 4px;
-            line-height: 1;
-            margin-bottom: 18px;
-            transition: color 0.3s;
-            font-family: 'Courier New', monospace;
-        }
-        .chrono-display.running { color: #00697A; }
-        .chrono-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
+
+        /* Chrono amélioré */
+        .field-chrono {
+            display: flex; align-items: center; gap: 10px; margin-top: 10px;
             flex-wrap: wrap;
         }
-        .btn-chrono-start {
-            background: linear-gradient(135deg, #00697A 0%, #00A3A6 100%);
-            color: white;
-            border: none;
-            padding: 14px 36px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(0,163,166,0.3);
+        .field-chrono-display {
+            font-family: 'Courier New', monospace; font-size: 18px; font-weight: bold;
+            background: rgba(255,255,255,0.9); padding: 6px 14px; border-radius: 8px;
+            min-width: 75px; text-align: center; border: 2px solid rgba(0,0,0,0.1);
+            color: #003D5C; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
-        .btn-chrono-start:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,163,166,0.4); }
-        .btn-chrono-stop {
-            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
-            color: white;
-            border: none;
-            padding: 14px 36px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(231,76,60,0.3);
+        .field-chrono-display.running {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404; border-color: #ffc107;
+            animation: pulse-glow 1.5s infinite;
         }
-        .btn-chrono-stop:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(231,76,60,0.4); }
-        .btn-chrono-pause {
-            background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
-            color: white;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(243,156,18,0.3);
+        .field-chrono-display.done {
+            background: linear-gradient(135deg, #d4edda, #b8e6bf);
+            color: #155724; border-color: #28a745;
         }
-        .btn-chrono-pause:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(243,156,18,0.4); }
-        .btn-chrono-reset {
-            background: #e9ecef;
-            color: #495057;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,193,7,0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(255,193,7,0.1); }
         }
-        .btn-chrono-reset:hover { background: #dee2e6; }
-        .chrono-hint { font-size: 12px; color: #6c757d; margin-top: 12px; }
-        .type-control-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
+        .btn-chrono {
+            padding: 6px 14px; border: none; border-radius: 6px; font-size: 12px;
+            font-weight: 700; cursor: pointer; transition: 0.2s; letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .type-btn {
-            border: 3px solid #d0e8ea;
-            border-radius: 12px;
-            padding: 20px 16px;
-            cursor: pointer;
-            text-align: center;
-            background: #f8fbfc;
-            transition: all 0.2s;
-            font-size: 15px;
-            font-weight: 600;
-            color: #003D5C;
-            width: 100%;
-            display: block;
+        .btn-chrono:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
-        .type-btn:hover {
+        .btn-chrono-start { background: linear-gradient(135deg, #00697A, #00A3A6); color: white; }
+        .btn-chrono-stop { background: linear-gradient(135deg, #c0392b, #e74c3c); color: white; }
+        .btn-chrono-reset { background: linear-gradient(135deg, #6c757d, #868e96); color: white; font-size: 11px; padding: 6px 10px;}
+
+        .seq-item input[readonly] {
+            background: linear-gradient(135deg, #f0fff0, #e8f5e9); cursor: not-allowed;
+        }
+
+        .btn {
+            padding: 12px 24px; border: none; border-radius: 8px; font-size: 15px;
+            font-weight: 600; cursor: pointer; transition: 0.2s; margin-right: 12px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-            border-color: #00A3A6;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
         }
-        .type-btn.selected-visuel {
-            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-            border-color: #2e7d32 !important;
-            color: #1b5e20;
-            box-shadow: 0 4px 15px rgba(46,125,50,0.25);
+        .btn-primary { background: linear-gradient(135deg, #00697A, #00A3A6); color: white; }
+        .btn-success { background: linear-gradient(135deg, #28a745, #34ce57); color: white; }
+        .btn-secondary { background: linear-gradient(135deg, #6c757d, #868e96); color: white; }
+        .btn-danger { background: linear-gradient(135deg, #dc3545, #e74c3c); color: white; }
+        .hidden { display: none; }
+        .progress {
+            font-size: 20px; font-weight: bold; color: #00697A; text-align: center; 
+            margin-bottom: 25px; padding: 15px; background: linear-gradient(to right, #e0f7fa, #b2ebf2);
+            border-radius: 10px; border-left: 5px solid #00A3A6;
         }
-        .type-btn.selected-outil {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            border-color: #1565c0 !important;
-            color: #0d47a1;
-            box-shadow: 0 4px 15px rgba(21,101,192,0.25);
+        .table-container { overflow-x: auto; margin-top: 20px; border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { 
+            background: linear-gradient(135deg, #003D5C, #00697A); 
+            color: white; padding: 14px 10px; text-align: left; 
+            position: sticky; top: 0; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px;
         }
-        .type-icon { font-size: 36px; display: block; margin-bottom: 8px; }
-        .type-label { font-size: 14px; font-weight: 700; display: block; }
-        .type-desc { font-size: 11px; opacity: 0.75; margin-top: 4px; display: block; }
-        .badge-visuel {
-            display: inline-block; background: #2e7d32; color: white;
-            padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+        td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; }
+        tr:hover { background: #f8fbfc; }
+        .gain-positif { background-color: #d4edda; color: #155724; font-weight: bold; }
+        .gain-negatif { background-color: #f8d7da; color: #721c24; font-weight: bold; }
+        .info-panel {
+            background: linear-gradient(to right, #e3f2fd, #bbdefb); 
+            padding: 18px; border-radius: 10px; margin-bottom: 25px; 
+            font-size: 14px; border-left: 5px solid #2196f3;
         }
-        .badge-outil {
-            display: inline-block; background: #1565c0; color: white;
-            padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+
+        /* Section rédaction avec style distinct */
+        .redaction-section {
+            background: linear-gradient(135deg, #fff8e1, #fff9c4);
+            border: 2px solid #ffd54f; border-radius: 16px;
+            padding: 30px; margin-bottom: 30px;
+            box-shadow: 0 6px 20px rgba(255,193,7,0.2);
         }
-        .stat-section-title {
-            font-size: 16px; font-weight: 700; color: #003D5C;
-            margin: 20px 0 12px; border-left: 4px solid #00A3A6;
-            padding-left: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+        .redaction-section h2 {
+            color: #5d4037; margin-bottom: 20px; font-size: 22px;
+            border-bottom: 3px solid #ffca28; padding-bottom: 12px;
         }
-        .stats-visuel .stat-card { border-top: 4px solid #2e7d32; }
-        .stats-outil .stat-card { border-top: 4px solid #1565c0; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
-        .running { animation: blink 1.2s ease-in-out infinite; }
+        .redaction-hint {
+            font-size: 13px; color: #666; margin-bottom: 20px;
+            background: white; padding: 15px; border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .redaction-row {
+            display: flex; align-items: center; gap: 15px; flex-wrap: wrap;
+        }
+        .redaction-row label {
+            font-weight: 700; color: #5d4037; font-size: 15px; min-width: 250px;
+        }
+        .redaction-row input {
+            width: 130px; padding: 12px; border: 2px solid #ffca28; 
+            border-radius: 8px; font-size: 16px; font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-content">
-                <h1>🔍 Suivi des Temps de Contrôle Final</h1>
-                <div class="subtitle">Optimisation des processus de contrôle qualité</div>
-                <div class="company">Projet mené par Nicolas Risco - EXALTA Group</div>
-            </div>
+            <h1>🔬 Analyse d'Échantillon et Gains KITOV</h1>
+            <div class="subtitle">Optimisation des processus de contrôle qualité - EXALTA Group</div>
         </div>
         
         <div class="content">
-            <!-- DÉCLARATION DU LOT -->
+            <!-- SECTION LOT -->
             <div class="form-section" id="lotSection">
-                <h2>📦 Déclaration du lot</h2>
+                <h2>📦 Informations du Lot</h2>
                 <form id="lotForm">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="lotDate">Date *</label>
+                            <label>Date</label>
                             <input type="date" id="lotDate" required>
                         </div>
                         <div class="form-group">
-                            <label for="lotOperateur">Opérateur *</label>
-                            <select id="lotOperateur" required>
-                                <option value="">-- Sélectionner un opérateur --</option>
-                                <option value="Stéphanie">Stéphanie</option>
-                                <option value="Lillian">Lillian</option>
-                                <option value="Stéphania">Stéphania</option>
-                                <option value="Elisabeth">Elisabeth</option>
-                                <option value="Matthieu">Matthieu</option>
-                                <option value="Nicolas">Nicolas</option>
-                            </select>
+                            <label>N° OF</label>
+                            <input type="text" id="lotOF" required placeholder="Ex: OF-2024-001">
                         </div>
                         <div class="form-group">
-                            <label for="lotNumeroAffaire">Numéro affaire *</label>
-                            <input type="text" id="lotNumeroAffaire" placeholder="Ex: A00" required>
+                            <label>Référence produit</label>
+                            <input type="text" id="lotRef" required placeholder="Ex: SP-1234">
                         </div>
                         <div class="form-group">
-                            <label for="lotNumeroOF">Numéro OF *</label>
-                            <input type="text" id="lotNumeroOF" placeholder="Ex: OF00" required>
+                            <label>Quantité Totale Lot (QT)</label>
+                            <input type="number" id="lotQT" min="1" required placeholder="100">
                         </div>
                         <div class="form-group">
-                            <label for="lotReference">Référence du lot *</label>
-                            <input type="text" id="lotReference" placeholder="Ex: SP" required>
+                            <label>Taille Échantillon</label>
+                            <input type="number" id="lotEchantillon" min="1" value="5" required placeholder="5-10">
                         </div>
                         <div class="form-group">
-                            <label for="lotQuantite">Quantité de pièces dans le lot *</label>
-                            <input type="number" id="lotQuantite" placeholder="Ex: 50, 200..." min="1" required>
+                            <label>Nb IS Frittés</label>
+                            <input type="number" id="lotNbIS" min="0" value="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Temps gamme total (min)</label>
+                            <input type="number" step="0.1" id="lotGamme" min="0" placeholder="Optionnel">
                         </div>
                     </div>
-                    <div class="form-grid" style="margin-top: 10px;">
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="lotDescriptionControle">Description du contrôle effectué (commune à toutes les pièces du lot)</label>
-                            <textarea id="lotDescriptionControle" rows="2" placeholder="Ex: Contrôle de l'état de surface, vérification des dimensions critiques..."></textarea>
-                        </div>
-                    </div>
-
-                    <h3 class="section-title" style="margin-top:24px;">Type(s) de contrôle appliqué à ce lot *</h3>
-                    <div class="type-control-selector">
-                        <button type="button" class="type-btn" id="btnTypeVisuel" onclick="toggleType('visuel')">
-                            <span class="type-icon">👁️</span>
-                            <span class="type-label">Contrôle Visuel</span>
-                            <span class="type-desc">Rayures, Bavures, Cornières…</span>
-                        </button>
-                        <button type="button" class="type-btn" id="btnTypeOutil" onclick="toggleType('outil')">
-                            <span class="type-icon">🔧</span>
-                            <span class="type-label">Contrôle à l'aide d'outils</span>
-                            <span class="type-desc">Outils frittés, mesures…</span>
-                        </button>
-                    </div>
-                    <div id="typeError" style="color:#dc3545; font-size:13px; margin-top:-8px; display:none;">⚠️ Veuillez sélectionner au moins un type de contrôle.</div>
-
                     <div style="margin-top: 25px;">
-                        <button type="submit" class="btn btn-primary">Commencer la saisie des pièces</button>
+                        <button type="submit" class="btn btn-primary">▶️ Démarrer la saisie de l'échantillon</button>
                     </div>
                 </form>
             </div>
 
-            <!-- SAISIE PAR PIÈCE -->
+            <!-- SECTION PIECES -->
             <div class="form-section hidden" id="pieceSection">
-                <h2>⏱️ Saisie des temps par pièce</h2>
-                
-                <div class="lot-info" id="lotInfo"></div>
-                
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressBar">0%</div>
+                <h2>⏱️ Saisie des Temps par Pièce (en minutes)</h2>
+                <div class="info-panel" id="lotInfoDisplay"></div>
+                <div class="progress" id="pieceProgress">Pièce 1 / 5</div>
+
+                <div class="legend">
+                    <strong style="color:#dc3545;">🔴 Fond Rouge :</strong> Temps incompressibles (maintien manuel) &nbsp;|&nbsp;
+                    <strong style="color:#28a745;">🟢 Fond Vert :</strong> Temps automatisables (remplacés par KITOV)<br>
+                    <strong>💡 Astuce :</strong> Utilisez les chronos pour mesurer précisément chaque étape !
                 </div>
 
-                <div class="piece-counter" id="pieceCounter"></div>
-
                 <form id="pieceForm">
-                    <h3 class="section-title">⏱️ Temps de contrôle</h3>
-                    <div id="chronosContainer"></div>
+                    <div class="input-sequence">
 
+                        <!-- 1 -->
+                        <div class="form-group seq-item incomp-bg">
+                            <label>1️⃣ Ctrl visuel (Rayures, aspect)</label>
+                            <input type="number" step="0.01" min="0" id="t_rayures" placeholder="min">
+                            <div class="field-chrono">
+                                <span class="field-chrono-display" id="cd_rayures">00:00</span>
+                                <button type="button" class="btn-chrono btn-chrono-start" onclick="startFieldChrono('rayures')">▶ START</button>
+                                <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('rayures')">⏹ STOP</button>
+                                <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('rayures')">↻</button>
+                            </div>
+                        </div>
 
-                    <div class="form-group" style="margin-top: 20px;">
-                        <label for="observations">Observations / Anomalies (optionnel)</label>
-                        <textarea id="observations" rows="2" placeholder="Problème rencontré, anomalie détectée..."></textarea>
+                        <!-- 2 - MANIP EN 2ème -->
+                        <div class="form-group seq-item incomp-bg">
+                            <label>2️⃣ Manipulation + fonctionnel</label>
+                            <input type="number" step="0.01" min="0" id="t_manip" placeholder="min">
+                            <div class="field-chrono">
+                                <span class="field-chrono-display" id="cd_manip">00:00</span>
+                                <button type="button" class="btn-chrono btn-chrono-start" onclick="startFieldChrono('manip')">▶ START</button>
+                                <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('manip')">⏹ STOP</button>
+                                <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('manip')">↻</button>
+                            </div>
+                        </div>
+
+                        <!-- 3 - DESSOUS EN 3ème -->
+                        <div class="form-group seq-item incomp-bg">
+                            <label>3️⃣ Contrôle dessous pièce</label>
+                            <input type="number" step="0.01" min="0" id="t_dessous" placeholder="min">
+                            <div class="field-chrono">
+                                <span class="field-chrono-display" id="cd_dessous">00:00</span>
+                                <button type="button" class="btn-chrono btn-chrono-start" onclick="startFieldChrono('dessous')">▶ START</button>
+                                <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('dessous')">⏹ STOP</button>
+                                <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('dessous')">↻</button>
+                            </div>
+                        </div>
+
+                        <!-- 4 -->
+                        <div class="form-group seq-item auto-bg">
+                            <label>4️⃣ Ctrl visuel (agencement)</label>
+                            <input type="number" step="0.01" min="0" id="t_agencement" placeholder="min">
+                            <div class="field-chrono">
+                                <span class="field-chrono-display" id="cd_agencement">00:00</span>
+                                <button type="button" class="btn-chrono btn-chrono-start" onclick="startFieldChrono('agencement')">▶ START</button>
+                                <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('agencement')">⏹ STOP</button>
+                                <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('agencement')">↻</button>
+                            </div>
+                        </div>
+
+                        <!-- 5 -->
+                        <div class="form-group seq-item auto-bg">
+                            <label>5️⃣ Ctrl marquage</label>
+                            <input type="number" step="0.01" min="0" id="t_marquage" placeholder="min">
+                            <div class="field-chrono">
+                                <span class="field-chrono-display" id="cd_marquage">00:00</span>
+                                <button type="button" class="btn-chrono btn-chrono-start" onclick="startFieldChrono('marquage')">▶ START</button>
+                                <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('marquage')">⏹ STOP</button>
+                                <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('marquage')">↻</button>
+                            </div>
+                        </div>
+
+                        <!-- 6 -->
+                        <div class="form-group seq-item auto-bg">
+                            <label>6️⃣ 1ère installation outils</label>
+                            <input type="number" step="0.01" min="0" id="t_install" placeholder="min">
+                            <div class="field-chrono">
+                                <span class="field-chrono-display" id="cd_install">00:00</span>
+                                <button type="button" class="btn-chrono btn-chrono-start" onclick="startFieldChrono('install')">▶ START</button>
+                                <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('install')">⏹ STOP</button>
+                                <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('install')">↻</button>
+                            </div>
+                        </div>
+
+                        <!-- 7 -->
+                        <div class="form-group seq-item auto-bg">
+                            <label>7️⃣ Temps Outil</label>
+                            <input type="number" step="0.01" min="0" id="t_outil" placeholder="min">
+                            <div class="field-chrono">
+                                <span class="field-chrono-display" id="cd_outil">00:00</span>
+                                <button type="button" class="btn-chrono btn-chrono-start" onclick="startFieldChrono('outil')">▶ START</button>
+                                <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('outil')">⏹ STOP</button>
+                                <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('outil')">↻</button>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div style="margin-top: 25px;">
-                        <button type="submit" class="btn btn-primary">➡️ Pièce suivante</button>
-                        <button type="button" onclick="cancelLot()" class="btn btn-secondary">❌ Annuler le lot</button>
+                        <button type="submit" class="btn btn-primary" id="btnNextPiece">➡️ Pièce Suivante</button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelLot()">❌ Annuler</button>
                     </div>
                 </form>
             </div>
 
-            <div class="stats" id="statsContainer"></div>
+            <!-- SECTION RAPPORT -->
+            <div class="redaction-section hidden" id="redactionSection">
+                <h2>📝 Rédaction du Rapport</h2>
+                <div class="redaction-hint">
+                    ✅ Toutes les pièces ont été mesurées ! Rédigez maintenant le rapport final, puis saisissez le temps que vous avez mis.
+                    Vous pouvez utiliser le chronomètre ci-dessous pour le mesurer précisément.
+                </div>
 
+                <div style="margin-bottom: 25px;">
+                    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                        <strong style="font-size: 15px;">Chronomètre rapport :</strong>
+                        <span class="field-chrono-display" id="cd_rapport">00:00</span>
+                        <button type="button" class="btn-chrono btn-chrono-start" onclick="startFieldChrono('rapport')">▶ START</button>
+                        <button type="button" class="btn-chrono btn-chrono-stop" onclick="stopFieldChrono('rapport')">⏹ STOP</button>
+                        <button type="button" class="btn-chrono btn-chrono-reset" onclick="resetFieldChrono('rapport')">↻ Reset</button>
+                    </div>
+                </div>
+
+                <div class="redaction-row">
+                    <label>⏱️ Temps de rédaction rapport (min/lot)</label>
+                    <input type="number" step="0.1" min="0" id="lotRedaction" value="0" placeholder="min">
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <button type="button" class="btn btn-success" onclick="finalizeWithRedaction()">✓ Valider et enregistrer le lot</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelLot()">❌ Annuler</button>
+                </div>
+            </div>
+
+            <!-- TABLEAU RESULTATS -->
             <div class="form-section">
-                <h2>📋 Données collectées</h2>
-                <div style="margin-bottom: 15px;">
-                    <button onclick="exportToExcel()" class="btn btn-success">📥 Exporter vers Excel avec indicateurs</button>
-                    <button onclick="clearAllData()" class="btn btn-secondary" style="background: #dc3545;">🗑️ Effacer toutes les données</button>
-                    <button onclick="migrateOldData()" class="btn btn-secondary" style="background: #f39c12;">🔄 Migrer anciennes données</button>
+                <h2>📊 Résultats Agrégés & Comparaison KITOV</h2>
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-success" onclick="exportToExcel()">📥 Exporter vers Excel</button>
+                    <button class="btn btn-danger" onclick="clearData()">🗑️ Effacer l'historique</button>
                 </div>
                 <div class="table-container">
                     <table id="dataTable">
                         <thead>
                             <tr>
                                 <th>Date</th>
-                                <th>Opérateur</th>
-                                <th>Affaire</th>
                                 <th>OF</th>
-                                <th>Référence Lot</th>
-                                <th>Types de contrôle</th>
-                                <th>Pièce N°</th>
-                                <th>Description</th>
-                                <th>Temps Visuel (min)</th>
-                                <th>Temps Outil (min)</th>
-                                <th>Observations</th>
-                                <th>Action</th>
+                                <th>Ref</th>
+                                <th>QT</th>
+                                <th>Rayures</th>
+                                <th>Manip+Fonc</th>
+                                <th>Dessous</th>
+                                <th>Agencement</th>
+                                <th>Marquage</th>
+                                <th>Install</th>
+                                <th>Outil</th>
+                                <th>Tps/Fritté</th>
+                                <th>Tps Moy/pc</th>
+                                <th>Tps Total</th>
+                                <th>Redac Rapp</th>
+                                <th>Gain/pc</th>
+                                <th>Gain Lot</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody"></tbody>
@@ -556,572 +417,270 @@
     </div>
 
     <script>
-        let data = [];
+        let globalData = JSON.parse(localStorage.getItem('exalta_kitov_data') || '[]');
         let currentLot = null;
-        let currentPieceNumber = 0;
-        let selectedTypes = new Set();
+        let currentPiece = 1;
+        let sampleData = [];
+        let pendingFinalData = null;
 
-        function toggleType(type) {
-            if (selectedTypes.has(type)) {
-                selectedTypes.delete(type);
-            } else {
-                selectedTypes.add(type);
-            }
-            document.getElementById('btnTypeVisuel').className = 'type-btn' + (selectedTypes.has('visuel') ? ' selected-visuel' : '');
-            document.getElementById('btnTypeOutil').className  = 'type-btn' + (selectedTypes.has('outil')  ? ' selected-outil'  : '');
-            document.getElementById('typeError').style.display = 'none';
+        const chronos = {};
+        const CHAMP_IDS = ['rayures','manip','dessous','agencement','marquage','install','outil','rapport'];
+
+        function getOrCreateChrono(key) {
+            if (!chronos[key]) chronos[key] = { interval: null, secs: 0 };
+            return chronos[key];
         }
 
-        const chronoState = {};
-
-        function formatTime(secs) {
-            const h = String(Math.floor(secs / 3600)).padStart(2, '0');
-            const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
-            const s = String(secs % 60).padStart(2, '0');
-            return `${h}:${m}:${s}`;
+        function updateChronoDisplay(key) {
+            const c = getOrCreateChrono(key);
+            const m = String(Math.floor(c.secs / 60)).padStart(2, '0');
+            const s = String(c.secs % 60).padStart(2, '0');
+            const el = document.getElementById('cd_' + key);
+            if (el) el.textContent = `${m}:${s}`;
         }
 
-        function initChrono(id) {
-            chronoState[id] = { interval: null, seconds: 0, running: false };
-        }
-
-        function startChrono(id) {
-            const c = chronoState[id];
-            if (c.running) return;
-            c.running = true;
-            document.getElementById('btnStart_'+id).style.display = 'none';
-            document.getElementById('btnPause_'+id).style.display = 'inline-block';
-            document.getElementById('btnStop_'+id).style.display = 'inline-block';
-            document.getElementById('chronoDisplay_'+id).classList.add('running');
-            document.getElementById('chronoHint_'+id).textContent = '⏱ Chrono en cours...';
+        function startFieldChrono(key) {
+            const c = getOrCreateChrono(key);
+            if (c.interval) return;
+            const el = document.getElementById('cd_' + key);
+            if (el) { el.classList.add('running'); el.classList.remove('done'); }
             c.interval = setInterval(() => {
-                c.seconds++;
-                document.getElementById('chronoDisplay_'+id).textContent = formatTime(c.seconds);
+                c.secs++;
+                updateChronoDisplay(key);
             }, 1000);
         }
 
-        function pauseChrono(id) {
-            const c = chronoState[id];
-            if (!c.running) {
-                c.running = true;
-                document.getElementById('btnPause_'+id).textContent = '⏸ Pause';
-                document.getElementById('chronoDisplay_'+id).classList.add('running');
-                document.getElementById('chronoHint_'+id).textContent = '⏱ Chrono en cours...';
-                c.interval = setInterval(() => {
-                    c.seconds++;
-                    document.getElementById('chronoDisplay_'+id).textContent = formatTime(c.seconds);
-                }, 1000);
-            } else {
+        function stopFieldChrono(key) {
+            const c = getOrCreateChrono(key);
+            if (!c.interval) return;
+            clearInterval(c.interval);
+            c.interval = null;
+
+            const inputId = key === 'rapport' ? 'lotRedaction' : 't_' + key;
+            const input = document.getElementById(inputId);
+            if (input) {
+                const minutes = parseFloat((c.secs / 60).toFixed(2));
+                input.value = minutes;
+            }
+            const el = document.getElementById('cd_' + key);
+            if (el) { el.classList.remove('running'); el.classList.add('done'); }
+        }
+
+        function resetFieldChrono(key) {
+            const c = getOrCreateChrono(key);
+            clearInterval(c.interval);
+            c.interval = null;
+            c.secs = 0;
+            updateChronoDisplay(key);
+            const el = document.getElementById('cd_' + key);
+            if (el) { el.classList.remove('running', 'done'); }
+            const inputId = key === 'rapport' ? 'lotRedaction' : 't_' + key;
+            const input = document.getElementById(inputId);
+            if (input) input.value = '';
+        }
+
+        function resetAllFieldChronos() {
+            CHAMP_IDS.forEach(key => {
+                const c = getOrCreateChrono(key);
                 clearInterval(c.interval);
-                c.running = false;
-                document.getElementById('btnPause_'+id).textContent = '▶ Reprendre';
-                document.getElementById('chronoDisplay_'+id).classList.remove('running');
-                document.getElementById('chronoHint_'+id).textContent = '⏸ En pause';
-            }
+                c.interval = null;
+                c.secs = 0;
+                updateChronoDisplay(key);
+                const el = document.getElementById('cd_' + key);
+                if (el) el.classList.remove('running', 'done');
+            });
         }
 
-        function stopChrono(id) {
-            const c = chronoState[id];
-            clearInterval(c.interval);
-            c.running = false;
-            document.getElementById('btnStart_'+id).style.display = 'none';
-            document.getElementById('btnPause_'+id).style.display = 'none';
-            document.getElementById('btnStop_'+id).style.display = 'none';
-            document.getElementById('chronoDisplay_'+id).classList.remove('running');
-            const mins = (c.seconds / 60).toFixed(2);
-            document.getElementById('tempsInput_'+id).value = mins;
-            document.getElementById('chronoHint_'+id).textContent = `✅ ${formatTime(c.seconds)} → ${mins} min`;
-            document.getElementById('manualInput_'+id).value = '';
-            document.getElementById('manualHint_'+id).textContent = 'Ou saisir manuellement ci-dessous';
-            document.getElementById('manualHint_'+id).style.color = '#6c757d';
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('lotDate').valueAsDate = new Date();
+            renderTable();
+        });
 
-        function resetChrono(id) {
-            const c = chronoState[id];
-            clearInterval(c.interval);
-            c.running = false;
-            c.seconds = 0;
-            document.getElementById('chronoDisplay_'+id).textContent = '00:00:00';
-            document.getElementById('chronoDisplay_'+id).classList.remove('running');
-            document.getElementById('btnStart_'+id).style.display = 'inline-block';
-            document.getElementById('btnPause_'+id).style.display = 'none';
-            document.getElementById('btnPause_'+id).textContent = '⏸ Pause';
-            document.getElementById('btnStop_'+id).style.display = 'none';
-            document.getElementById('tempsInput_'+id).value = '';
-            document.getElementById('chronoHint_'+id).textContent = 'Appuyez sur Démarrer pour lancer';
-            if (document.getElementById('manualInput_'+id)) {
-                document.getElementById('manualInput_'+id).value = '';
-                document.getElementById('manualHint_'+id).textContent = 'Ou saisir manuellement ci-dessous';
-                document.getElementById('manualHint_'+id).style.color = '#6c757d';
-            }
-        }
-
-        function onManualInput(id) {
-            const val = parseFloat(document.getElementById('manualInput_'+id).value);
-            if (!isNaN(val) && val > 0) {
-                const c = chronoState[id];
-                if (c.running) { clearInterval(c.interval); c.running = false; document.getElementById('chronoDisplay_'+id).classList.remove('running'); }
-                document.getElementById('tempsInput_'+id).value = val.toFixed(2);
-                const totalSecs = Math.round(val * 60);
-                document.getElementById('manualHint_'+id).textContent = `✅ ${val} min = ${formatTime(totalSecs)}`;
-                document.getElementById('manualHint_'+id).style.color = '#00697A';
-                document.getElementById('chronoHint_'+id).textContent = 'Saisie manuelle utilisée';
-            } else {
-                document.getElementById('tempsInput_'+id).value = '';
-                document.getElementById('manualHint_'+id).textContent = 'Ou saisir manuellement ci-dessous';
-                document.getElementById('manualHint_'+id).style.color = '#6c757d';
-            }
-        }
-
-        function buildChronoBlock(id, label, colorClass) {
-            return `
-            <div class="chrono-block" style="margin-bottom:0; border-color:${colorClass === 'visuel' ? '#2e7d32' : '#1565c0'};">
-                <div style="font-size:13px; font-weight:700; color:${colorClass === 'visuel' ? '#1b5e20' : '#0d47a1'}; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">${label}</div>
-                <div class="chrono-display" id="chronoDisplay_${id}">00:00:00</div>
-                <div class="chrono-buttons">
-                    <button type="button" id="btnStart_${id}" class="btn-chrono-start" onclick="startChrono('${id}')">▶ Démarrer</button>
-                    <button type="button" id="btnPause_${id}" class="btn-chrono-pause" onclick="pauseChrono('${id}')" style="display:none;">⏸ Pause</button>
-                    <button type="button" id="btnStop_${id}" class="btn-chrono-stop" onclick="stopChrono('${id}')" style="display:none;">⏹ Arrêter</button>
-                    <button type="button" class="btn-chrono-reset" onclick="resetChrono('${id}')">↺ Reset</button>
-                </div>
-                <div class="chrono-hint" id="chronoHint_${id}">Appuyez sur Démarrer pour lancer</div>
-                <div style="margin-top:12px; border-top:1px solid #e0e0e0; padding-top:10px;">
-                    <input type="number" id="manualInput_${id}" step="0.1" min="0" placeholder="Saisie manuelle (min)"
-                        style="padding:10px; border:2px solid #d0e8ea; border-radius:8px; font-size:18px; font-weight:700; color:#003D5C; text-align:center; width:100%;"
-                        oninput="onManualInput('${id}')">
-                    <div style="font-size:11px; color:#6c757d; text-align:center; margin-top:4px;" id="manualHint_${id}">Ou saisir manuellement ci-dessous</div>
-                </div>
-                <input type="hidden" id="tempsInput_${id}">
-            </div>`;
-        }
-
-        function buildPieceChronos() {
-            const types = currentLot.typesControle;
-            const hasBoth = types.includes('visuel') && types.includes('outil');
-            let html = `<div style="display:grid; grid-template-columns:${hasBoth ? '1fr 1fr' : '1fr'}; gap:16px; align-items:stretch;">`;
-            if (types.includes('visuel')) {
-                html += buildChronoBlock('visuel', '👁️ Contrôle Visuel', 'visuel');
-                initChrono('visuel');
-            }
-            if (types.includes('outil')) {
-                html += buildChronoBlock('outil', '🔧 Contrôle Outil', 'outil');
-                initChrono('outil');
-            }
-            html += '</div>';
-            document.getElementById('chronosContainer').innerHTML = html;
-        }
-
-        function init() {
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            document.getElementById('lotDate').value = `${yyyy}-${mm}-${dd}`;
-            loadData();
-            updateTable();
-            updateStats();
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
-
-        function loadData() {
-            const savedData = localStorage.getItem('exalta_controle_data');
-            if (savedData) {
-                try { data = JSON.parse(savedData); } catch(e) { data = []; }
-            }
-        }
-
-        function saveData() {
-            try { localStorage.setItem('exalta_controle_data', JSON.stringify(data)); }
-            catch(e) { alert('Erreur lors de la sauvegarde des données'); }
-        }
-
-        document.getElementById('lotForm').addEventListener('submit', function(e) {
+        document.getElementById('lotForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            if (selectedTypes.size === 0) {
-                document.getElementById('typeError').style.display = 'block';
-                return;
-            }
             currentLot = {
                 date: document.getElementById('lotDate').value,
-                operateur: document.getElementById('lotOperateur').value.trim(),
-                numeroAffaire: document.getElementById('lotNumeroAffaire').value.trim(),
-                numeroOF: document.getElementById('lotNumeroOF').value.trim(),
-                reference: document.getElementById('lotReference').value.trim(),
-                quantite: parseInt(document.getElementById('lotQuantite').value),
-                descriptionControle: document.getElementById('lotDescriptionControle').value.trim(),
-                typesControle: Array.from(selectedTypes)
+                of: document.getElementById('lotOF').value,
+                ref: document.getElementById('lotRef').value,
+                qt: parseInt(document.getElementById('lotQT').value),
+                echantillon: parseInt(document.getElementById('lotEchantillon').value),
+                nbIs: parseInt(document.getElementById('lotNbIS').value),
+                gamme: parseFloat(document.getElementById('lotGamme').value) || 0,
+                redaction: 0
             };
-            currentPieceNumber = 1;
+            sampleData = [];
+            currentPiece = 1;
 
-            const typesBadges = currentLot.typesControle.map(t =>
-                t === 'visuel' ? '<span class="badge-visuel">👁️ Visuel</span>' : '<span class="badge-outil">🔧 Outil</span>'
-            ).join(' ');
-
-            document.getElementById('lotInfo').innerHTML = `
-                <h3>📦 ${currentLot.reference}</h3>
-                <p>Opérateur : ${currentLot.operateur} | Date : ${new Date(currentLot.date).toLocaleDateString('fr-FR')} | Total : ${currentLot.quantite} pièces</p>
-                <p style="margin-top:4px;">Affaire : <strong>${currentLot.numeroAffaire}</strong> | OF : <strong>${currentLot.numeroOF}</strong> | ${typesBadges}</p>
-                ${currentLot.descriptionControle ? `<p style="margin-top:6px; font-style:italic; opacity:0.9;">🔍 ${currentLot.descriptionControle}</p>` : ''}
+            document.getElementById('lotInfoDisplay').innerHTML = `
+                <strong>Référence:</strong> ${currentLot.ref} | <strong>OF:</strong> ${currentLot.of} | 
+                <strong>Échantillon:</strong> ${currentLot.echantillon} pièces (sur lot de ${currentLot.qt})
             `;
-            buildPieceChronos();
-            updatePieceCounter();
-            updateProgressBar();
+
             document.getElementById('lotSection').classList.add('hidden');
+            document.getElementById('redactionSection').classList.add('hidden');
             document.getElementById('pieceSection').classList.remove('hidden');
+            updatePieceUI();
         });
 
-        document.getElementById('pieceForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const types = currentLot.typesControle;
-            types.forEach(t => { if (chronoState[t] && chronoState[t].running) stopChrono(t); });
-            const tempsVisuel = types.includes('visuel') ? parseFloat(document.getElementById('tempsInput_visuel')?.value) || 0 : 0;
-            const tempsOutil  = types.includes('outil')  ? parseFloat(document.getElementById('tempsInput_outil')?.value)  || 0 : 0;
-            if (types.includes('visuel') && tempsVisuel <= 0) {
-                alert('⚠️ Veuillez renseigner le temps du contrôle Visuel.');
-                return;
-            }
-            if (types.includes('outil') && tempsOutil <= 0) {
-                alert('⚠️ Veuillez renseigner le temps du contrôle Outil.');
-                return;
-            }
-            savePieceData(tempsVisuel, tempsOutil);
-        });
-
-        function savePieceData(tempsVisuel, tempsOutil) {
-            const entry = {
-                date: currentLot.date,
-                operateur: currentLot.operateur,
-                numeroAffaire: currentLot.numeroAffaire,
-                numeroOF: currentLot.numeroOF,
-                lotReference: currentLot.reference,
-                typesControle: currentLot.typesControle,
-                pieceNumber: currentPieceNumber,
-                descriptionControle: currentLot.descriptionControle,
-                tempsVisuel: tempsVisuel,
-                tempsOutil: tempsOutil,
-                tempsTotal: tempsVisuel + tempsOutil,
-                observations: document.getElementById('observations').value.trim()
-            };
-            data.push(entry);
-            saveData();
-            updateTable();
-            updateStats();
-            currentPieceNumber++;
-            if (currentPieceNumber > currentLot.quantite) {
-                alert(`✅ Lot ${currentLot.reference} terminé !\n${currentLot.quantite} pièces contrôlées.`);
-                resetLot();
-            } else {
-                resetPieceForm();
-                updatePieceCounter();
-                updateProgressBar();
-            }
-        }
-
-        function updatePieceCounter() {
-            document.getElementById('pieceCounter').textContent = 
-                `Pièce ${currentPieceNumber} / ${currentLot.quantite}`;
-        }
-
-        function updateProgressBar() {
-            const progress = ((currentPieceNumber - 1) / currentLot.quantite) * 100;
-            const progressBar = document.getElementById('progressBar');
-            progressBar.style.width = progress + '%';
-            progressBar.textContent = Math.round(progress) + '%';
-        }
-
-        function resetPieceForm() {
-            document.getElementById('observations').value = '';
-            if (currentLot) {
-                currentLot.typesControle.forEach(t => resetChrono(t));
-            }
-        }
-
-        function resetLot() {
-            selectedTypes = new Set();
-            document.getElementById('btnTypeVisuel').className = 'type-btn';
-            document.getElementById('btnTypeOutil').className = 'type-btn';
-            currentLot = null;
-            currentPieceNumber = 0;
-            document.getElementById('lotForm').reset();
+        function updatePieceUI() {
+            document.getElementById('pieceProgress').textContent = `Pièce ${currentPiece} / ${currentLot.echantillon}`;
             document.getElementById('pieceForm').reset();
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            document.getElementById('lotDate').value = `${yyyy}-${mm}-${dd}`;
-            document.getElementById('chronosContainer').innerHTML = '';
-            document.getElementById('lotSection').classList.remove('hidden');
+            resetAllFieldChronos();
+            if (currentPiece === currentLot.echantillon) {
+                document.getElementById('btnNextPiece').textContent = "✓ Terminer les mesures";
+            } else {
+                document.getElementById('btnNextPiece').textContent = "➡️ Pièce Suivante";
+            }
+        }
+
+        document.getElementById('pieceForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const pieceTimes = {
+                rayures:    parseFloat(document.getElementById('t_rayures').value) || 0,
+                manip:      parseFloat(document.getElementById('t_manip').value) || 0,
+                dessous:    parseFloat(document.getElementById('t_dessous').value) || 0,
+                agencement: parseFloat(document.getElementById('t_agencement').value) || 0,
+                marquage:   parseFloat(document.getElementById('t_marquage').value) || 0,
+                install:    parseFloat(document.getElementById('t_install').value) || 0,
+                outil:      parseFloat(document.getElementById('t_outil').value) || 0
+            };
+            sampleData.push(pieceTimes);
+
+            if (currentPiece < currentLot.echantillon) {
+                currentPiece++;
+                updatePieceUI();
+            } else {
+                showRedactionStep();
+            }
+        });
+
+        function showRedactionStep() {
+            const sums = { rayures:0, manip:0, dessous:0, agencement:0, marquage:0, install:0, outil:0 };
+            sampleData.forEach(p => { for (let key in sums) sums[key] += p[key]; });
+            const n = currentLot.echantillon;
+            const avgs = {};
+            for (let key in sums) avgs[key] = sums[key] / n;
+
+            pendingFinalData = { avgs };
+
             document.getElementById('pieceSection').classList.add('hidden');
+            document.getElementById('lotRedaction').value = '0';
+            resetFieldChrono('rapport');
+            document.getElementById('redactionSection').classList.remove('hidden');
+        }
+
+        function finalizeWithRedaction() {
+            const redaction = parseFloat(document.getElementById('lotRedaction').value) || 0;
+            currentLot.redaction = redaction;
+
+            const avgs = pendingFinalData.avgs;
+            const moyIncomp = avgs.rayures + avgs.manip + avgs.dessous;
+            const moyAuto = avgs.agencement + avgs.marquage + avgs.install + avgs.outil;
+            const moyTotalPiece = moyIncomp + moyAuto;
+
+            const tpsOutilFritte = currentLot.nbIs > 0 ? (avgs.outil / currentLot.nbIs) : 0;
+            const tempsTotalExtrapole = (moyTotalPiece * currentLot.qt) + redaction;
+
+            const gainPiece = moyAuto - 3;
+            const gainLot = gainPiece * currentLot.qt;
+
+            const finalEntry = {
+                ...currentLot,
+                moyennes: avgs,
+                tpsOutilFritte,
+                moyTotalPiece,
+                tempsTotalExtrapole,
+                gainPiece,
+                gainLot
+            };
+
+            globalData.push(finalEntry);
+            localStorage.setItem('exalta_kitov_data', JSON.stringify(globalData));
+
+            document.getElementById('redactionSection').classList.add('hidden');
+            document.getElementById('lotSection').classList.remove('hidden');
+            document.getElementById('lotForm').reset();
+            document.getElementById('lotDate').valueAsDate = new Date();
+            pendingFinalData = null;
+            renderTable();
         }
 
         function cancelLot() {
-            if (confirm('Voulez-vous vraiment annuler ce lot ?\nLes pièces déjà saisies seront conservées.')) {
-                resetLot();
+            if (confirm('Annuler la saisie en cours ?')) {
+                resetAllFieldChronos();
+                pendingFinalData = null;
+                document.getElementById('lotSection').classList.remove('hidden');
+                document.getElementById('pieceSection').classList.add('hidden');
+                document.getElementById('redactionSection').classList.add('hidden');
             }
         }
 
-        function updateTable() {
+        function clearData() {
+            if (confirm('Supprimer toutes les données ?')) {
+                globalData = [];
+                localStorage.removeItem('exalta_kitov_data');
+                renderTable();
+            }
+        }
+
+        function renderTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
-            data.forEach((entry, index) => {
-                const row = tbody.insertRow();
-                const types = (entry.typesControle || (entry.typeControle ? [entry.typeControle] : []));
-                const typesBadges = types.map(t =>
-                    t === 'visuel' ? '<span class="badge-visuel">👁️ Visuel</span>' : '<span class="badge-outil">🔧 Outil</span>'
-                ).join(' ');
-                const tV = entry.tempsVisuel ?? (entry.typeControle === 'visuel' ? entry.tempsControle : 0);
-                const tO = entry.tempsOutil  ?? (entry.typeControle === 'outil'  ? entry.tempsControle : 0);
-                row.innerHTML = `
-                    <td>${new Date(entry.date).toLocaleDateString('fr-FR')}</td>
-                    <td>${entry.operateur}</td>
-                    <td>${entry.numeroAffaire || '-'}</td>
-                    <td>${entry.numeroOF || '-'}</td>
-                    <td>${entry.lotReference}</td>
-                    <td>${typesBadges}</td>
-                    <td>${entry.pieceNumber}</td>
-                    <td>${entry.descriptionControle || '-'}</td>
-                    <td>${tV > 0 ? `<strong>${tV.toFixed(1)} min</strong>` : '-'}</td>
-                    <td>${tO > 0 ? `<strong>${tO.toFixed(1)} min</strong>` : '-'}</td>
-                    <td>${entry.observations || '-'}</td>
-                    <td><button class="btn-delete" onclick="deleteEntry(${index})">🗑️</button></td>
+            globalData.forEach((row) => {
+                const tr = document.createElement('tr');
+                const gainClass = row.gainLot >= 0 ? 'gain-positif' : 'gain-negatif';
+                tr.innerHTML = `
+                    <td>${new Date(row.date).toLocaleDateString('fr-FR')}</td>
+                    <td>${row.of}</td>
+                    <td>${row.ref}</td>
+                    <td>${row.qt}</td>
+                    <td style="background:#ffe8e8;">${row.moyennes.rayures.toFixed(2)}</td>
+                    <td style="background:#ffe8e8;">${row.moyennes.manip.toFixed(2)}</td>
+                    <td style="background:#ffe8e8;">${row.moyennes.dessous.toFixed(2)}</td>
+                    <td style="background:#e8f5e9;">${row.moyennes.agencement.toFixed(2)}</td>
+                    <td style="background:#e8f5e9;">${row.moyennes.marquage.toFixed(2)}</td>
+                    <td style="background:#e8f5e9;">${row.moyennes.install.toFixed(2)}</td>
+                    <td style="background:#e8f5e9;">${row.moyennes.outil.toFixed(2)}</td>
+                    <td>${row.tpsOutilFritte.toFixed(2)}</td>
+                    <td><strong>${row.moyTotalPiece.toFixed(2)}</strong></td>
+                    <td>${row.tempsTotalExtrapole.toFixed(2)}</td>
+                    <td><strong>${row.redaction.toFixed(2)}</strong></td>
+                    <td class="${row.gainPiece >= 0 ? 'gain-positif' : 'gain-negatif'}">${row.gainPiece.toFixed(2)}</td>
+                    <td class="${gainClass}"><strong>${row.gainLot.toFixed(2)}</strong></td>
                 `;
+                tbody.appendChild(tr);
             });
-        }
-
-        function updateStats() {
-            if (data.length === 0) {
-                document.getElementById('statsContainer').innerHTML = '';
-                return;
-            }
-
-            const getV = e => e.tempsVisuel ?? (e.typeControle === 'visuel' ? e.tempsControle : 0);
-            const getO = e => e.tempsOutil  ?? (e.typeControle === 'outil'  ? e.tempsControle : 0);
-
-            const withVisuel  = data.filter(e => getV(e) > 0);
-            const withOutil   = data.filter(e => getO(e) > 0);
-            const withBoth    = data.filter(e => getV(e) > 0 && getO(e) > 0);
-            const lots = new Set(data.map(e => e.lotReference));
-
-            function statBlock(arr, getter, colorClass, borderColor) {
-                if (!arr.length) return `<p style="color:#999; font-size:13px; padding:10px;">Aucune donnée pour ce type.</p>`;
-                const vals = arr.map(getter);
-                const avg = vals.reduce((s,v) => s+v, 0) / vals.length;
-                const min = Math.min(...vals);
-                const max = Math.max(...vals);
-                const tot = vals.reduce((s,v) => s+v, 0);
-                return `<div class="stats ${colorClass}">
-                    <div class="stat-card" style="border-top:4px solid ${borderColor}"><h3>Pièces</h3><div class="value">${arr.length}</div></div>
-                    <div class="stat-card" style="border-top:4px solid ${borderColor}"><h3>Temps moyen</h3><div class="value">${avg.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid ${borderColor}"><h3>Min</h3><div class="value">${min.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid ${borderColor}"><h3>Max</h3><div class="value">${max.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid ${borderColor}"><h3>Total cumulé</h3><div class="value">${(tot/60).toFixed(1)} h</div></div>
-                </div>`;
-            }
-
-            function statBlockBoth(arr) {
-                if (!arr.length) return `<p style="color:#999; font-size:13px; padding:10px;">Aucune donnée pour ce type.</p>`;
-                const totals = arr.map(e => getV(e) + getO(e));
-                const avg = totals.reduce((s,v) => s+v, 0) / totals.length;
-                const min = Math.min(...totals);
-                const max = Math.max(...totals);
-                const tot = totals.reduce((s,v) => s+v, 0);
-                return `<div class="stats">
-                    <div class="stat-card" style="border-top:4px solid #6a1b9a"><h3>Pièces</h3><div class="value">${arr.length}</div></div>
-                    <div class="stat-card" style="border-top:4px solid #6a1b9a"><h3>Temps moyen total</h3><div class="value">${avg.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid #6a1b9a"><h3>Min</h3><div class="value">${min.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid #6a1b9a"><h3>Max</h3><div class="value">${max.toFixed(1)} min</div></div>
-                    <div class="stat-card" style="border-top:4px solid #6a1b9a"><h3>Total cumulé</h3><div class="value">${(tot/60).toFixed(1)} h</div></div>
-                </div>`;
-            }
-
-            const bothSection = withBoth.length > 0 ? `
-                <div class="stat-section-title" style="margin-top:24px; border-left-color:#6a1b9a;">👁️🔧 Contrôle complet (Visuel + Outil)</div>
-                ${statBlockBoth(withBoth)}
-            ` : '';
-
-            document.getElementById('statsContainer').innerHTML = `
-                <div style="background:#f8fbfc; border-radius:12px; padding:24px; margin-bottom:24px; border:1px solid #e0f0f2;">
-                    <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
-                        <div class="stat-card" style="flex:1; min-width:130px;"><h3>Total pièces</h3><div class="value">${data.length}</div></div>
-                        <div class="stat-card" style="flex:1; min-width:130px;"><h3>Lots</h3><div class="value">${lots.size}</div></div>
-                        <div class="stat-card" style="flex:1; min-width:130px;"><h3>👁️ Visuel seul</h3><div class="value" style="color:#2e7d32">${withVisuel.length - withBoth.length}</div></div>
-                        <div class="stat-card" style="flex:1; min-width:130px;"><h3>🔧 Outil seul</h3><div class="value" style="color:#1565c0">${withOutil.length - withBoth.length}</div></div>
-                        ${withBoth.length > 0 ? `<div class="stat-card" style="flex:1; min-width:130px;"><h3>👁️🔧 Complet</h3><div class="value" style="color:#6a1b9a">${withBoth.length}</div></div>` : ''}
-                    </div>
-                    <div class="stat-section-title">👁️ Contrôle Visuel — Rayures, Bavures, Cornières…</div>
-                    ${statBlock(withVisuel, getV, 'stats-visuel', '#2e7d32')}
-                    <div class="stat-section-title" style="margin-top:24px;">🔧 Contrôle à l'aide d'outils frittés</div>
-                    ${statBlock(withOutil, getO, 'stats-outil', '#1565c0')}
-                    ${bothSection}
-                </div>
-            `;
-        }
-
-        function deleteEntry(index) {
-            if (confirm('Supprimer cette observation ?')) {
-                data.splice(index, 1);
-                saveData();
-                updateTable();
-                updateStats();
-            }
-        }
-
-        function clearAllData() {
-            if (confirm('⚠️ ATTENTION : Voulez-vous vraiment effacer TOUTES les données ?\n\nCette action est irréversible !')) {
-                if (confirm('Confirmez-vous la suppression définitive de ' + data.length + ' observations ?')) {
-                    data = [];
-                    localStorage.removeItem('exalta_controle_data');
-                    updateTable();
-                    updateStats();
-                    alert('Toutes les données ont été effacées.');
-                }
-            }
-        }
-
-        function migrateOldData() {
-            let migrated = 0;
-            
-            data.forEach(entry => {
-                if (!entry.typesControle && !entry.tempsVisuel && !entry.tempsOutil) {
-                    const type = prompt(`Pièce ${entry.pieceNumber} du lot ${entry.lotReference}\nDescription: ${entry.descriptionControle || 'N/A'}\n\nQuel type de contrôle ?\n1 = Visuel\n2 = Outil\n3 = Les deux`);
-                    
-                    if (type === '1') {
-                        entry.typesControle = ['visuel'];
-                        entry.tempsVisuel = entry.tempsControle || 0;
-                        entry.tempsOutil = 0;
-                        migrated++;
-                    } else if (type === '2') {
-                        entry.typesControle = ['outil'];
-                        entry.tempsVisuel = 0;
-                        entry.tempsOutil = entry.tempsControle || 0;
-                        migrated++;
-                    } else if (type === '3') {
-                        entry.typesControle = ['visuel', 'outil'];
-                        const half = (entry.tempsControle || 0) / 2;
-                        entry.tempsVisuel = half;
-                        entry.tempsOutil = half;
-                        migrated++;
-                    }
-                    
-                    if (!entry.numeroAffaire) entry.numeroAffaire = '';
-                    if (!entry.numeroOF) entry.numeroOF = '';
-                }
-            });
-            
-            if (migrated > 0) {
-                saveData();
-                updateTable();
-                updateStats();
-                alert(`✅ ${migrated} entrées ont été migrées avec succès !`);
-            } else {
-                alert('ℹ️ Aucune donnée à migrer. Toutes vos données sont déjà au bon format.');
-            }
         }
 
         function exportToExcel() {
-            if (data.length === 0) { alert('Aucune donnée à exporter'); return; }
-
-            const wb = XLSX.utils.book_new();
-            const getV = e => e.tempsVisuel ?? (e.typeControle === 'visuel' ? e.tempsControle : 0);
-            const getO = e => e.tempsOutil  ?? (e.typeControle === 'outil'  ? e.tempsControle : 0);
-            const withVisuel = data.filter(e => getV(e) > 0);
-            const withOutil  = data.filter(e => getO(e) > 0);
-
-            function toRows(arr) {
-                return arr.map(e => {
-                    const types = (e.typesControle || (e.typeControle ? [e.typeControle] : []));
-                    const tV = e.tempsVisuel ?? (e.typeControle === 'visuel' ? e.tempsControle : 0);
-                    const tO = e.tempsOutil  ?? (e.typeControle === 'outil'  ? e.tempsControle : 0);
-                    return {
-                        'Date': new Date(e.date).toLocaleDateString('fr-FR'),
-                        'Opérateur': e.operateur,
-                        'N° Affaire': e.numeroAffaire || '',
-                        'N° OF': e.numeroOF || '',
-                        'Référence Lot': e.lotReference,
-                        'Pièce N°': e.pieceNumber,
-                        'Types contrôle': types.map(t => t === 'visuel' ? 'Visuel' : 'Outil').join(' + '),
-                        'Description': e.descriptionControle || '',
-                        'Temps Visuel (min)': tV || '',
-                        'Temps Outil (min)': tO || '',
-                        'Temps total (min)': (tV + tO).toFixed(2),
-                        'Observations': e.observations || ''
-                    };
-                });
-            }
-
-            function statsRows(arr, getT, label) {
-                if (!arr.length) return [{ 'Indicateur': 'Aucune donnée', 'Valeur': '', 'Unité': '' }];
-                const vals = arr.map(getT).filter(v => v > 0);
-                if (!vals.length) return [{ 'Indicateur': 'Aucune donnée', 'Valeur': '', 'Unité': '' }];
-                const avg = vals.reduce((s,v) => s+v, 0) / vals.length;
-                const min = Math.min(...vals);
-                const max = Math.max(...vals);
-                const tot = vals.reduce((s,v) => s+v, 0);
-                const lots = new Set(arr.map(e => e.lotReference));
-                return [
-                    { 'Indicateur': `=== ${label} ===`, 'Valeur': '', 'Unité': '' },
-                    { 'Indicateur': 'Pièces', 'Valeur': vals.length, 'Unité': '' },
-                    { 'Indicateur': 'Nombre de lots', 'Valeur': lots.size, 'Unité': '' },
-                    { 'Indicateur': 'Temps moyen / pièce', 'Valeur': avg.toFixed(2), 'Unité': 'min' },
-                    { 'Indicateur': 'Temps minimum', 'Valeur': min.toFixed(2), 'Unité': 'min' },
-                    { 'Indicateur': 'Temps maximum', 'Valeur': max.toFixed(2), 'Unité': 'min' },
-                    { 'Indicateur': 'Temps total cumulé', 'Valeur': tot.toFixed(2), 'Unité': 'min' },
-                    { 'Indicateur': 'Temps total cumulé', 'Valeur': (tot/60).toFixed(2), 'Unité': 'heures' },
-                    { 'Indicateur': '', 'Valeur': '', 'Unité': '' }
-                ];
-            }
-
-            const ws1 = XLSX.utils.json_to_sheet(toRows(data));
-            XLSX.utils.book_append_sheet(wb, ws1, "Toutes les données");
-
-            if (withVisuel.length) {
-                const ws2 = XLSX.utils.json_to_sheet(toRows(withVisuel));
-                XLSX.utils.book_append_sheet(wb, ws2, "Controle Visuel");
-            }
-
-            if (withOutil.length) {
-                const ws3 = XLSX.utils.json_to_sheet(toRows(withOutil));
-                XLSX.utils.book_append_sheet(wb, ws3, "Controle Outil");
-            }
-
-            const indicateurs = [
-                { 'Indicateur': 'EXALTA GROUP - Analyse des temps de contrôle final', 'Valeur': '', 'Unité': '' },
-                { 'Indicateur': 'Projet mené par Nicolas Risco', 'Valeur': '', 'Unité': '' },
-                { 'Indicateur': '', 'Valeur': '', 'Unité': '' },
-                ...statsRows(withVisuel, getV, 'CONTRÔLE VISUEL — Rayures, Bavures, Cornières'),
-                ...statsRows(withOutil, getO, 'CONTRÔLE OUTILS FRITTÉS')
-            ];
-            const ws4 = XLSX.utils.json_to_sheet(indicateurs);
-            XLSX.utils.book_append_sheet(wb, ws4, "Indicateurs");
-
-            const lotStats = {};
-            data.forEach(e => {
-                const k = e.lotReference;
-                if (!lotStats[k]) lotStats[k] = { operateur: e.operateur, date: e.date, count:0, totV:0, totO:0 };
-                lotStats[k].count++;
-                lotStats[k].totV += getV(e);
-                lotStats[k].totO += getO(e);
-            });
-            const parLot = Object.keys(lotStats).map(lot => ({
-                'Référence Lot': lot,
-                'Date': new Date(lotStats[lot].date).toLocaleDateString('fr-FR'),
-                'Opérateur': lotStats[lot].operateur,
-                'Total pièces': lotStats[lot].count,
-                'Tps moy Visuel (min)': lotStats[lot].totV > 0 ? (lotStats[lot].totV / lotStats[lot].count).toFixed(2) : '-',
-                'Tps moy Outil (min)': lotStats[lot].totO > 0 ? (lotStats[lot].totO / lotStats[lot].count).toFixed(2) : '-',
-                'Total Visuel (min)': lotStats[lot].totV.toFixed(2),
-                'Total Outil (min)': lotStats[lot].totO.toFixed(2),
-                'Total cumulé (min)': (lotStats[lot].totV + lotStats[lot].totO).toFixed(2)
+            if (globalData.length === 0) return alert("Aucune donnée à exporter.");
+            const exportFormat = globalData.map(r => ({
+                "Date": new Date(r.date).toLocaleDateString('fr-FR'),
+                "N° OF": r.of,
+                "Référence produit": r.ref,
+                "QT": r.qt,
+                "Taille Échantillon": r.echantillon,
+                "Nb IS Frittés": r.nbIs,
+                "Temps gamme (min)": r.gamme,
+                "Temps Ctrl visuel (Rayures,aspect)": r.moyennes.rayures.toFixed(2),
+                "Temps Manipulation + fonctionnel": r.moyennes.manip.toFixed(2),
+                "Temps de contrôle dessous pièce": r.moyennes.dessous.toFixed(2),
+                "Temps Ctrl visuel (agencement)": r.moyennes.agencement.toFixed(2),
+                "Temps Ctrl marquage (min)": r.moyennes.marquage.toFixed(2),
+                "1ère installation des outils": r.moyennes.install.toFixed(2),
+                "Temps Outil (min)": r.moyennes.outil.toFixed(2),
+                "Temps moyen par outil fritté": r.tpsOutilFritte.toFixed(2),
+                "Temps moyen Ctrl total par pièce (min)": r.moyTotalPiece.toFixed(2),
+                "Temps total extrapolé": r.tempsTotalExtrapole.toFixed(2),
+                "Temps de rédaction rapport": r.redaction.toFixed(2),
+                "Gains/pièce (vs KITOV 3min)": r.gainPiece.toFixed(2),
+                "Gains potentiel lot": r.gainLot.toFixed(2),
+                "Statut Gain": r.gainLot >= 0 ? "POSITIF ✓" : "NÉGATIF ✗"
             }));
-            const ws5 = XLSX.utils.json_to_sheet(parLot);
-            XLSX.utils.book_append_sheet(wb, ws5, "Analyse par lot");
-
-            XLSX.writeFile(wb, `EXALTA_Controle_Final_${new Date().toISOString().split('T')[0]}.xlsx`);
+            const ws = XLSX.utils.json_to_sheet(exportFormat);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Analyse_KITOV");
+            XLSX.writeFile(wb, `EXALTA_Analyse_KITOV_${new Date().toISOString().split('T')[0]}.xlsx`);
         }
     </script>
 </body>
