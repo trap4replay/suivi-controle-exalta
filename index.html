@@ -829,27 +829,82 @@
 
         function exportToExcel() {
             if (globalData.length === 0) return alert("Aucune donnée à exporter.");
-            const exportFormat = globalData.map(r => ({
-                "Date": new Date(r.date).toLocaleDateString('fr-FR'),
-                "N° OF": r.of,
-                "Référence produit": r.ref,
-                "QT": r.qt,
-                "Nb IS Frittés": r.nbIs,
-                "Temps gamme (min)": r.gamme.toString().replace('.', ','),
-                "Pièce N°": r.pieceNumber,
-                "Temps Ctrl visuel (Rayures,aspect) (min)": r.rayures.toFixed(2).replace('.', ','),
-                "Temps Manipulation + fonctionnel (min)": r.manip.toFixed(2).replace('.', ','),
-                "Temps de contrôle dessous pièce (min)": r.dessous.toFixed(2).replace('.', ','),
-                "Temps Ctrl visuel (agencement) (min)": r.agencement.toFixed(2).replace('.', ','),
-                "Temps Ctrl marquage (min)": r.marquage.toFixed(2).replace('.', ','),
-                "Temps Outil (min)": r.outil.toFixed(2).replace('.', ','),
-                "1ère installation des outils (min)": r.install.toFixed(2).replace('.', ','),
-                "Temps de rédaction rapport (min)": r.redaction.toFixed(2).replace('.', ',')
-            }));
-            const ws = XLSX.utils.json_to_sheet(exportFormat);
+
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Suivi_Temps_Controle");
-            XLSX.writeFile(wb, `EXALTA_Suivi_Temps_Controle_${new Date().toISOString().split('T')[0]}.xlsx`);
+
+            // ── Feuille 1 : Données brutes avec vrais nombres ──
+            const exportFormat = globalData.map(r => ({
+                "Date":                                      new Date(r.date).toLocaleDateString('fr-FR'),
+                "N° OF":                                     r.of,
+                "Référence produit":                         r.ref,
+                "QT Lot":                                    Number(r.qt)      || 0,
+                "Nb IS Frittés":                             Number(r.nbIs)    || 0,
+                "Temps gamme (min)":                         Number(r.gamme)   || 0,
+                "Pièce N°":                                  Number(r.pieceNumber),
+                "Ctrl visuel Rayures/aspect (min)":          Number(r.rayures.toFixed(2)),
+                "Manipulation + fonctionnel (min)":          Number(r.manip.toFixed(2)),
+                "Contrôle dessous pièce (min)":              Number(r.dessous.toFixed(2)),
+                "Ctrl visuel agencement (min)":              Number(r.agencement.toFixed(2)),
+                "Ctrl marquage (min)":                       Number(r.marquage.toFixed(2)),
+                "Temps Outil (min)":                         Number(r.outil.toFixed(2)),
+                "1ère installation outils (min)":            Number(r.install.toFixed(2)),
+                "Rédaction rapport (min)":                   Number(r.redaction.toFixed(2)),
+                "Total pièce (min)":                         Number((r.rayures + r.manip + r.dessous + r.agencement + r.marquage + r.outil).toFixed(2)),
+                "Total avec install+rapport (min)":          Number((r.rayures + r.manip + r.dessous + r.agencement + r.marquage + r.outil + r.install + r.redaction).toFixed(2))
+            }));
+
+            const ws1 = XLSX.utils.json_to_sheet(exportFormat);
+
+            // Largeur des colonnes
+            ws1['!cols'] = [
+                {wch:12},{wch:12},{wch:18},{wch:8},{wch:10},{wch:12},{wch:8},
+                {wch:20},{wch:22},{wch:22},{wch:22},{wch:18},{wch:14},{wch:22},{wch:20},{wch:16},{wch:24}
+            ];
+            XLSX.utils.book_append_sheet(wb, ws1, "Données brutes");
+
+            // ── Feuille 2 : Analyse par lot ──
+            const parLot = {};
+            globalData.forEach(r => {
+                const k = r.ref + '|' + r.of;
+                if (!parLot[k]) parLot[k] = { ref: r.ref, of: r.of, qt: r.qt, nbIs: r.nbIs, gamme: r.gamme, pieces: [] };
+                parLot[k].pieces.push(r);
+            });
+
+            const analyseRows = [];
+            Object.values(parLot).forEach(lot => {
+                const n = lot.pieces.length;
+                const avg = field => Number((lot.pieces.reduce((s,p) => s + (p[field]||0), 0) / n).toFixed(2));
+                const totalPiece = avg('rayures') + avg('manip') + avg('dessous') + avg('agencement') + avg('marquage') + avg('outil');
+                const kitov = Number(lot.gamme) || 3;
+                const gain100 = Number(((kitov - totalPiece) * 100).toFixed(0));
+                const gainLot = Number(((kitov - totalPiece) * lot.qt).toFixed(0));
+
+                analyseRows.push({
+                    "Référence":                    lot.ref,
+                    "N° OF":                        lot.of,
+                    "QT Lot":                       Number(lot.qt),
+                    "Pièces mesurées":              n,
+                    "Moy. Rayures/aspect (min)":    avg('rayures'),
+                    "Moy. Manip + fonc. (min)":     avg('manip'),
+                    "Moy. Dessous pièce (min)":     avg('dessous'),
+                    "Moy. Agencement (min)":        avg('agencement'),
+                    "Moy. Marquage (min)":          avg('marquage'),
+                    "Moy. Outil (min)":             avg('outil'),
+                    "Moy. Total / pièce (min)":     Number(totalPiece.toFixed(2)),
+                    "Install outils (min)":         avg('install'),
+                    "Rapport / lot (min)":          avg('redaction'),
+                    "Référence KITOV (min)":        kitov,
+                    "Gain vs KITOV × 100 pièces (min)": gain100,
+                    "Gain vs KITOV lot entier (min)":   gainLot,
+                    "Gain % vs KITOV":              kitov > 0 ? Number(((kitov - totalPiece) / kitov * 100).toFixed(1)) : 0
+                });
+            });
+
+            const ws2 = XLSX.utils.json_to_sheet(analyseRows);
+            ws2['!cols'] = Array(17).fill({wch:22});
+            XLSX.utils.book_append_sheet(wb, ws2, "Analyse par lot");
+
+            XLSX.writeFile(wb, `EXALTA_Controle_${new Date().toISOString().split('T')[0]}.xlsx`);
         }
     </script>
 </body>
