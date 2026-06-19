@@ -164,6 +164,43 @@ tr:hover td { background:#f0f9fa; }
 .filter-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; align-items:center; }
 .filter-row select { padding:8px 12px; font-size:13px; }
 .hidden { display:none; }
+
+/* VERSION BADGE */
+.version-badge {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    background: linear-gradient(135deg, #003D5C, #00697A);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0,61,92,0.4);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: default;
+    user-select: none;
+    transition: all 0.2s;
+}
+.version-badge:hover {
+    background: linear-gradient(135deg, #00697A, #00A3A6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,163,166,0.4);
+}
+.version-badge .dot {
+    width: 6px; height: 6px;
+    background: #00C9CC;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+}
 </style>
 </head>
 <body>
@@ -189,7 +226,6 @@ tr:hover td { background:#f0f9fa; }
 <!-- ══ TAB SAISIE ══ -->
 <div id="tab-saisie" class="tab-pane active">
 
-    <!-- SECTION LOT -->
     <div class="card" id="lotSection">
         <h2>📦 Déclaration du lot</h2>
         <form id="lotForm">
@@ -216,7 +252,6 @@ tr:hover td { background:#f0f9fa; }
         </form>
     </div>
 
-    <!-- SECTION INSTALLATION (1 fois pour le lot) -->
     <div class="card hidden" id="installSection">
         <div class="lot-banner" id="installBanner"></div>
         <h2>🔧 1ère Installation des Outils ARRK <span style="font-size:13px; color:#888; font-weight:400;">(une seule fois pour ce lot)</span></h2>
@@ -241,7 +276,6 @@ tr:hover td { background:#f0f9fa; }
         </div>
     </div>
 
-    <!-- SECTION PIÈCES -->
     <div class="card hidden" id="pieceSection">
         <div class="lot-banner" id="lotBanner"></div>
         <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%">0%</div></div>
@@ -254,7 +288,6 @@ tr:hover td { background:#f0f9fa; }
         </div>
 
         <form id="pieceForm">
-            <!-- 1 - INCOMPRESSIBLE -->
             <div class="chrono-zone incomp">
                 <div class="chrono-label">1️⃣ 🔴 Ctrl visuel — Rayures, Aspect <span style="font-weight:400;color:#888;">(incompressible)</span></div>
                 <div class="chrono-row">
@@ -270,7 +303,6 @@ tr:hover td { background:#f0f9fa; }
                 </div>
             </div>
 
-            <!-- 2 - INCOMPRESSIBLE -->
             <div class="chrono-zone incomp">
                 <div class="chrono-label">2️⃣ 🔴 Manipulation + Fonctionnel <span style="font-weight:400;color:#888;">(incompressible)</span></div>
                 <div class="chrono-row">
@@ -286,7 +318,6 @@ tr:hover td { background:#f0f9fa; }
                 </div>
             </div>
 
-            <!-- 3 - INCOMPRESSIBLE -->
             <div class="chrono-zone incomp">
                 <div class="chrono-label">3️⃣ 🔴 Contrôle dessous pièce <span style="font-weight:400;color:#888;">(incompressible)</span></div>
                 <div class="chrono-row">
@@ -302,7 +333,6 @@ tr:hover td { background:#f0f9fa; }
                 </div>
             </div>
 
-            <!-- 4 - AUTOMATISABLE -->
             <div class="chrono-zone auto">
                 <div class="chrono-label">4️⃣ 🟢 Ctrl visuel — Agencement <span style="font-weight:400;color:#888;">(automatisable KITOV)</span></div>
                 <div class="chrono-row">
@@ -318,7 +348,6 @@ tr:hover td { background:#f0f9fa; }
                 </div>
             </div>
 
-            <!-- 5 - AUTOMATISABLE -->
             <div class="chrono-zone auto">
                 <div class="chrono-label">5️⃣ 🟢 Ctrl Marquage <span style="font-weight:400;color:#888;">(automatisable KITOV)</span></div>
                 <div class="chrono-row">
@@ -334,7 +363,6 @@ tr:hover td { background:#f0f9fa; }
                 </div>
             </div>
 
-            <!-- 6 - AUTOMATISABLE -->
             <div class="chrono-zone auto">
                 <div class="chrono-label">6️⃣ 🟢 Temps Outil (ARRK) <span style="font-weight:400;color:#888;">(automatisable KITOV)</span></div>
                 <div class="chrono-row">
@@ -361,20 +389,13 @@ tr:hover td { background:#f0f9fa; }
             </div>
         </form>
 
-        <!-- LIVE TABLE -->
         <div class="live-table-wrap" id="liveTable">
             <div class="live-table-header">📋 Pièces mesurées — en cours</div>
             <div style="overflow-x:auto;">
                 <table>
                     <thead><tr>
-                        <th>Pièce</th>
-                        <th>Rayures</th>
-                        <th>Manip</th>
-                        <th>Dessous</th>
-                        <th>Agencement</th>
-                        <th>Marquage</th>
-                        <th>Outil</th>
-                        <th>Obs.</th>
+                        <th>Pièce</th><th>Rayures</th><th>Manip</th><th>Dessous</th>
+                        <th>Agencement</th><th>Marquage</th><th>Outil</th><th>Obs.</th>
                     </tr></thead>
                     <tbody id="liveTbody"></tbody>
                 </table>
@@ -382,7 +403,6 @@ tr:hover td { background:#f0f9fa; }
         </div>
     </div>
 
-    <!-- SECTION RAPPORT -->
     <div class="card hidden" id="rapportSection">
         <div class="lot-banner" id="rapportBanner"></div>
         <h2>📝 Rédaction du Rapport <span style="font-size:13px; color:#888; font-weight:400;">(une seule fois pour ce lot)</span></h2>
@@ -423,9 +443,7 @@ tr:hover td { background:#f0f9fa; }
                 <option>Stéphanie</option><option>Lillian</option><option>Stéphania</option>
                 <option>Elisabeth</option><option>Matthieu</option><option>Nicolas</option><option>Leila</option>
             </select>
-            <select id="filterOF" onchange="renderTable()">
-                <option value="">Tous OF</option>
-            </select>
+            <select id="filterOF" onchange="renderTable()"><option value="">Tous OF</option></select>
         </div>
         <div class="import-zone" onclick="document.getElementById('importFile').click()">
             <h3>📤 Importer des données depuis Excel</h3>
@@ -456,8 +474,13 @@ tr:hover td { background:#f0f9fa; }
 
 </div>
 
+<!-- VERSION BADGE -->
+<div class="version-badge" title="Dernière mise à jour : Juin 2025">
+    <span class="dot"></span>
+    v1.2.0 — EXALTA
+</div>
+
 <script>
-// ═══ ÉTAT ═══
 let data = [];
 let currentLot = null;
 let currentPiece = 1;
@@ -465,7 +488,6 @@ let piecesData = [];
 let installTime = 0;
 const CHRONO_IDS = ['install','rayures','manip','dessous','agencement','marquage','outil','rapport'];
 
-// ═══ INIT ═══
 function init() {
     try { data = JSON.parse(localStorage.getItem('exalta_ctrl_data') || '[]'); } catch(e) { data = []; }
     const t = new Date();
@@ -475,7 +497,6 @@ function init() {
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
 
-// ═══ TABS ═══
 function goTab(id) {
     document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -486,29 +507,20 @@ function goTab(id) {
     if (id==='historique') renderTable();
 }
 
-// ═══ CHRONOS ═══
 const CS = {};
 function initC(id) { CS[id] = { iv:null, s:0, running:false }; }
 function fmtTime(s) { return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
-
 function startC(id) {
     const c = CS[id]; if (!c || c.running) return;
     c.running = true;
-    g('cs_'+id).style.display='none';
-    g('cp_'+id).style.display='inline-block';
-    g('ck_'+id).style.display='inline-block';
+    g('cs_'+id).style.display='none'; g('cp_'+id).style.display='inline-block'; g('ck_'+id).style.display='inline-block';
     g('cd_'+id).classList.add('running');
     c.iv = setInterval(()=>{ c.s++; g('cd_'+id).textContent=fmtTime(c.s); }, 1000);
 }
 function pauseC(id) {
     const c = CS[id]; if (!c) return;
-    if (c.running) {
-        clearInterval(c.iv); c.running=false;
-        g('cp_'+id).textContent='▶ Rep.'; g('cd_'+id).classList.remove('running');
-    } else {
-        c.running=true; g('cp_'+id).textContent='⏸ Pause'; g('cd_'+id).classList.add('running');
-        c.iv = setInterval(()=>{ c.s++; g('cd_'+id).textContent=fmtTime(c.s); }, 1000);
-    }
+    if (c.running) { clearInterval(c.iv); c.running=false; g('cp_'+id).textContent='▶ Rep.'; g('cd_'+id).classList.remove('running'); }
+    else { c.running=true; g('cp_'+id).textContent='⏸ Pause'; g('cd_'+id).classList.add('running'); c.iv = setInterval(()=>{ c.s++; g('cd_'+id).textContent=fmtTime(c.s); }, 1000); }
 }
 function stopC(id) {
     const c = CS[id]; if (!c) return;
@@ -524,98 +536,61 @@ function resetC(id) {
     g('cs_'+id).style.display='inline-block'; g('cp_'+id).style.display='none'; g('ck_'+id).style.display='none';
     g('cp_'+id).textContent='⏸ Pause';
 }
-function manualC(id) {
-    const c = CS[id]; if (!c) return;
-    if (c.running) { clearInterval(c.iv); c.running=false; g('cd_'+id).classList.remove('running'); }
-}
+function manualC(id) { const c = CS[id]; if (!c) return; if (c.running) { clearInterval(c.iv); c.running=false; g('cd_'+id).classList.remove('running'); } }
 function getC(id) { return parseFloat(g('ci_'+id)?.value) || 0; }
 function resetAllC() { CHRONO_IDS.forEach(id => { if(CS[id]) resetC(id); }); }
 function g(id) { return document.getElementById(id); }
 
-// ═══ LOT FORM ═══
 document.getElementById('lotForm').addEventListener('submit', function(e) {
     e.preventDefault();
     g('lotErrors').style.display='none';
     currentLot = {
-        date:      g('lotDate').value,
-        operateur: g('lotOperateur').value,
-        affaire:   g('lotAffaire').value.trim(),
-        of:        g('lotOF').value.trim(),
-        ref:       g('lotRef').value.trim(),
-        qt:        parseInt(g('lotQt').value),
-        ech:       parseInt(g('lotEch').value),
-        nbIs:      parseInt(g('lotNbIS').value) || 0,
-        gamme:     parseFloat(g('lotGamme').value) || 0
+        date: g('lotDate').value, operateur: g('lotOperateur').value,
+        affaire: g('lotAffaire').value.trim(), of: g('lotOF').value.trim(),
+        ref: g('lotRef').value.trim(), qt: parseInt(g('lotQt').value),
+        ech: parseInt(g('lotEch').value), nbIs: parseInt(g('lotNbIS').value) || 0,
+        gamme: parseFloat(g('lotGamme').value) || 0
     };
     currentPiece = 1; piecesData = [];
     CHRONO_IDS.forEach(id => initC(id));
-
     const banner = `<h3>🔍 ${currentLot.ref} — OF ${currentLot.of}</h3>
         <p>${currentLot.operateur} | ${new Date(currentLot.date).toLocaleDateString('fr-FR')} | Affaire ${currentLot.affaire} | Lot : <strong>${currentLot.qt}</strong> pcs | Échantillon : <strong>${currentLot.ech}</strong> pcs</p>`;
     g('installBanner').innerHTML = banner;
-
     g('lotSection').classList.add('hidden');
     g('installSection').classList.remove('hidden');
 });
 
-// ═══ DÉMARRER PIÈCES ═══
 function startPieces() {
     installTime = getC('install');
     if (installTime <= 0) { alert('⚠️ Veuillez mesurer le temps d\'installation des outils.'); return; }
     resetC('install');
-
     const banner = `<h3>🔍 ${currentLot.ref} — OF ${currentLot.of}</h3>
         <p>${currentLot.operateur} | ${new Date(currentLot.date).toLocaleDateString('fr-FR')} | Affaire ${currentLot.affaire} | Lot : <strong>${currentLot.qt}</strong> pcs | Échantillon : <strong>${currentLot.ech}</strong> pcs</p>`;
     g('lotBanner').innerHTML = banner;
-
     g('installSection').classList.add('hidden');
     g('pieceSection').classList.remove('hidden');
-    g('liveTable').style.display='none';
-    g('liveTbody').innerHTML='';
+    g('liveTable').style.display='none'; g('liveTbody').innerHTML='';
     updatePieceUI();
 }
 
-// ═══ PIÈCE FORM ═══
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('pieceForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        ['rayures','manip','dessous','agencement','marquage','outil'].forEach(id => {
-            if (CS[id]?.running) stopC(id);
-        });
-
+        ['rayures','manip','dessous','agencement','marquage','outil'].forEach(id => { if (CS[id]?.running) stopC(id); });
         const entry = {
-            date:        currentLot.date,
-            operateur:   currentLot.operateur,
-            affaire:     currentLot.affaire,
-            of:          currentLot.of,
-            ref:         currentLot.ref,
-            qt:          currentLot.qt,
-            ech:         currentLot.ech,
-            nbIs:        currentLot.nbIs,
-            gamme:       currentLot.gamme,
-            pieceNumber: currentPiece,
-            install:     installTime,
-            rayures:     getC('rayures'),
-            manip:       getC('manip'),
-            dessous:     getC('dessous'),
-            agencement:  getC('agencement'),
-            marquage:    getC('marquage'),
-            outil:       getC('outil'),
-            rapport:     0,
-            obs:         g('pieceObs').value.trim()
+            date: currentLot.date, operateur: currentLot.operateur, affaire: currentLot.affaire,
+            of: currentLot.of, ref: currentLot.ref, qt: currentLot.qt, ech: currentLot.ech,
+            nbIs: currentLot.nbIs, gamme: currentLot.gamme, pieceNumber: currentPiece,
+            install: installTime, rayures: getC('rayures'), manip: getC('manip'),
+            dessous: getC('dessous'), agencement: getC('agencement'), marquage: getC('marquage'),
+            outil: getC('outil'), rapport: 0, obs: g('pieceObs').value.trim()
         };
-
-        piecesData.push(entry);
-        renderLiveTable();
-
+        piecesData.push(entry); renderLiveTable();
         if (currentPiece < currentLot.ech) {
-            currentPiece++;
-            updatePieceUI();
+            currentPiece++; updatePieceUI();
             ['rayures','manip','dessous','agencement','marquage','outil'].forEach(id => resetC(id));
             g('pieceObs').value='';
-        } else {
-            showRapport();
-        }
+        } else { showRapport(); }
     });
 });
 
@@ -625,47 +600,31 @@ function updatePieceUI() {
     g('pieceCtr').textContent=`Pièce ${currentPiece} / ${currentLot.ech}`;
     g('btnNextPiece').textContent = currentPiece===currentLot.ech ? '✓ Terminer les mesures' : '➡️ Pièce suivante';
 }
-
 function renderLiveTable() {
     g('liveTable').style.display='block';
-    let rows = piecesData.map(p => `<tr>
+    g('liveTbody').innerHTML = piecesData.map(p => `<tr>
         <td><strong>#${p.pieceNumber}</strong></td>
-        <td>${p.rayures>0 ? fmt(p.rayures) : '—'}</td>
-        <td>${p.manip>0 ? fmt(p.manip) : '—'}</td>
-        <td>${p.dessous>0 ? fmt(p.dessous) : '—'}</td>
-        <td>${p.agencement>0 ? fmt(p.agencement) : '—'}</td>
-        <td>${p.marquage>0 ? fmt(p.marquage) : '—'}</td>
-        <td>${p.outil>0 ? fmt(p.outil) : '—'}</td>
+        <td>${p.rayures>0?fmt(p.rayures):'—'}</td><td>${p.manip>0?fmt(p.manip):'—'}</td>
+        <td>${p.dessous>0?fmt(p.dessous):'—'}</td><td>${p.agencement>0?fmt(p.agencement):'—'}</td>
+        <td>${p.marquage>0?fmt(p.marquage):'—'}</td><td>${p.outil>0?fmt(p.outil):'—'}</td>
         <td>${p.obs||'—'}</td>
     </tr>`).join('');
-    g('liveTbody').innerHTML = rows;
 }
-
-// ═══ RAPPORT ═══
 function showRapport() {
-    g('pieceSection').classList.add('hidden');
-    resetC('rapport');
-    const banner = `<h3>🔍 ${currentLot.ref} — OF ${currentLot.of}</h3>
+    g('pieceSection').classList.add('hidden'); resetC('rapport');
+    g('rapportBanner').innerHTML = `<h3>🔍 ${currentLot.ref} — OF ${currentLot.of}</h3>
         <p>✅ ${piecesData.length} pièces mesurées — Dernière étape : rédaction du rapport</p>`;
-    g('rapportBanner').innerHTML = banner;
     g('rapportSection').classList.remove('hidden');
 }
-
-// ═══ SAVE LOT ═══
 function saveLot() {
     if (CS['rapport']?.running) stopC('rapport');
     const rapport = getC('rapport');
     if (rapport <= 0) { alert('⚠️ Veuillez mesurer le temps de rédaction du rapport.'); return; }
-
     piecesData.forEach(p => { p.rapport = rapport; });
-    data.push(...piecesData);
-    save();
-    renderTable(); renderStats();
+    data.push(...piecesData); save(); renderTable(); renderStats();
     alert(`✅ Lot enregistré ! ${piecesData.length} pièce(s) ajoutée(s).`);
     resetAll();
 }
-
-// ═══ RESET ═══
 function resetAll() {
     currentLot=null; currentPiece=1; piecesData=[]; installTime=0;
     g('lotForm').reset();
@@ -673,132 +632,68 @@ function resetAll() {
     g('lotDate').value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
     resetAllC();
     g('lotSection').classList.remove('hidden');
-    g('installSection').classList.add('hidden');
-    g('pieceSection').classList.add('hidden');
-    g('rapportSection').classList.add('hidden');
-    g('liveTable').style.display='none';
-    g('liveTbody').innerHTML='';
+    ['installSection','pieceSection','rapportSection'].forEach(id => g(id).classList.add('hidden'));
+    g('liveTable').style.display='none'; g('liveTbody').innerHTML='';
 }
-function cancelLot() {
-    if (confirm('Annuler ? Les pièces déjà saisies sont perdues.')) resetAll();
-}
-
-// ═══ SAVE/LOAD ═══
+function cancelLot() { if (confirm('Annuler ? Les pièces déjà saisies sont perdues.')) resetAll(); }
 function save() { try { localStorage.setItem('exalta_ctrl_data', JSON.stringify(data)); } catch(e){} }
 function clearAll() {
     if (!confirm('Effacer TOUTES les données ?')) return;
     if (!confirm(`${data.length} lignes supprimées définitivement ?`)) return;
-    data=[]; localStorage.removeItem('exalta_ctrl_data');
-    renderTable(); renderStats();
+    data=[]; localStorage.removeItem('exalta_ctrl_data'); renderTable(); renderStats();
 }
-
-// ═══ FORMAT TEMPS ═══
 function fmt(mins) {
     if (!mins || mins<=0) return '—';
-    const totalSec = Math.round(mins*60);
-    const h=Math.floor(totalSec/3600), m=Math.floor((totalSec%3600)/60), s=totalSec%60;
+    const totalSec=Math.round(mins*60), h=Math.floor(totalSec/3600), m=Math.floor((totalSec%3600)/60), s=totalSec%60;
     if (h>0) return `${h}h ${m>0?m+'min':''}`.trim();
     if (m>0 && s>0) return `${m}min ${s}s`;
     if (m>0) return `${m}min`;
     return `${s}s`;
 }
-
-// ═══ TABLE HISTORIQUE ═══
 function renderTable() {
-    const fOp = g('filterOp')?.value || '';
-    const fOF = g('filterOF')?.value || '';
-
-    // Mettre à jour filtre OF
-    const ofs = [...new Set(data.map(r=>r.of))].sort();
-    const selOF = g('filterOF');
-    if (selOF) {
-        const cur = selOF.value;
-        selOF.innerHTML = '<option value="">Tous OF</option>' + ofs.map(o=>`<option${o===cur?' selected':''}>${o}</option>`).join('');
-    }
-
-    const filtered = data.filter(r =>
-        (!fOp || r.operateur===fOp) &&
-        (!fOF || r.of===fOF)
-    );
-    const tbody = g('mainTbody');
-    if (!tbody) return;
-    tbody.innerHTML = filtered.map((r, i) => `<tr>
-        <td>${new Date(r.date).toLocaleDateString('fr-FR')}</td>
-        <td>${r.operateur}</td>
-        <td>${r.affaire||'—'}</td>
-        <td><strong>${r.of}</strong></td>
-        <td>${r.ref}</td>
-        <td>#${r.pieceNumber}</td>
-        <td>${r.qt}</td>
-        <td>${r.ech}</td>
-        <td>${r.nbIs||0}</td>
+    const fOp=g('filterOp')?.value||'', fOF=g('filterOF')?.value||'';
+    const ofs=[...new Set(data.map(r=>r.of))].sort();
+    const selOF=g('filterOF');
+    if (selOF) { const cur=selOF.value; selOF.innerHTML='<option value="">Tous OF</option>'+ofs.map(o=>`<option${o===cur?' selected':''}>${o}</option>`).join(''); }
+    const filtered=data.filter(r=>(!fOp||r.operateur===fOp)&&(!fOF||r.of===fOF));
+    const tbody=g('mainTbody'); if (!tbody) return;
+    tbody.innerHTML=filtered.map((r,i)=>`<tr>
+        <td>${new Date(r.date).toLocaleDateString('fr-FR')}</td><td>${r.operateur}</td>
+        <td>${r.affaire||'—'}</td><td><strong>${r.of}</strong></td><td>${r.ref}</td>
+        <td>#${r.pieceNumber}</td><td>${r.qt}</td><td>${r.ech}</td><td>${r.nbIs||0}</td>
         <td style="background:#fff5f5;">${r.rayures>0?fmt(r.rayures):'—'}</td>
         <td style="background:#fff5f5;">${r.manip>0?fmt(r.manip):'—'}</td>
         <td style="background:#fff5f5;">${r.dessous>0?fmt(r.dessous):'—'}</td>
         <td style="background:#f0fff4;">${r.agencement>0?fmt(r.agencement):'—'}</td>
         <td style="background:#f0fff4;">${r.marquage>0?fmt(r.marquage):'—'}</td>
         <td style="background:#f0fff4;">${r.outil>0?fmt(r.outil):'—'}</td>
-        <td>${r.install>0?fmt(r.install):'—'}</td>
-        <td>${r.rapport>0?fmt(r.rapport):'—'}</td>
+        <td>${r.install>0?fmt(r.install):'—'}</td><td>${r.rapport>0?fmt(r.rapport):'—'}</td>
         <td>${r.obs||'—'}</td>
         <td><button class="btn btn-danger btn-sm" onclick="deleteRow(${data.indexOf(r)})">🗑️</button></td>
     </tr>`).join('');
 }
-function deleteRow(i) {
-    if (!confirm('Supprimer cette ligne ?')) return;
-    data.splice(i,1); save(); renderTable(); renderStats();
-}
-
-// ═══ STATS ═══
+function deleteRow(i) { if (!confirm('Supprimer cette ligne ?')) return; data.splice(i,1); save(); renderTable(); renderStats(); }
 function renderStats() {
-    const c = g('statsContainer');
+    const c=g('statsContainer');
     if (!data.length) { c.innerHTML='<p style="text-align:center;color:#999;padding:60px;font-size:15px;">Aucune donnée pour le moment.</p>'; return; }
-
-    const total = data.length;
-    const ofs = new Set(data.map(r=>r.of)).size;
-    const avgRayures    = data.reduce((s,r)=>s+(r.rayures||0),0)/total;
-    const avgManip      = data.reduce((s,r)=>s+(r.manip||0),0)/total;
-    const avgDessous    = data.reduce((s,r)=>s+(r.dessous||0),0)/total;
-    const avgAgencement = data.reduce((s,r)=>s+(r.agencement||0),0)/total;
-    const avgMarquage   = data.reduce((s,r)=>s+(r.marquage||0),0)/total;
-    const avgOutil      = data.reduce((s,r)=>s+(r.outil||0),0)/total;
-    const avgIncomp     = avgRayures + avgManip + avgDessous;
-    const avgAuto       = avgAgencement + avgMarquage + avgOutil;
-    const avgTotal      = avgIncomp + avgAuto;
-
-    // Stats par opérateur
-    const opMap = {};
-    data.forEach(r => {
-        if (!opMap[r.operateur]) opMap[r.operateur] = { pieces:0, incomp:0, auto:0 };
-        opMap[r.operateur].pieces++;
-        opMap[r.operateur].incomp += (r.rayures||0)+(r.manip||0)+(r.dessous||0);
-        opMap[r.operateur].auto   += (r.agencement||0)+(r.marquage||0)+(r.outil||0);
-    });
-
-    // Stats par OF
-    const ofMap = {};
-    data.forEach(r => {
-        if (!ofMap[r.of]) ofMap[r.of] = { of:r.of, ref:r.ref, affaire:r.affaire, op:r.operateur, qt:r.qt, ech:r.ech, pieces:[], install:r.install||0, rapport:r.rapport||0 };
-        ofMap[r.of].pieces.push(r);
-    });
-
-    let html = `<div class="card"><h2>📊 Vue globale</h2>
-        <div class="stats-row">
-            <div class="stat-box"><h4>Pièces mesurées</h4><div class="val">${total}</div></div>
-            <div class="stat-box amber"><h4>Lots (OF)</h4><div class="val">${ofs}</div></div>
-            <div class="stat-box teal"><h4>Tps moyen total/pièce</h4><div class="val" style="font-size:18px;">${fmt(avgTotal)}</div></div>
-            <div class="stat-box red"><h4>🔴 Tps incompressible</h4><div class="val" style="font-size:18px;">${fmt(avgIncomp)}</div></div>
-            <div class="stat-box green"><h4>🟢 Tps automatisable</h4><div class="val" style="font-size:18px;">${fmt(avgAuto)}</div></div>
-        </div>
-    </div>`;
-
-    // Détail des temps moyens
-    html += `<div class="card"><h2>📋 Détail des temps moyens par mesure</h2>
-        <table class="stats-tbl"><thead><tr>
-            <th>Mesure</th><th>Type</th><th>Tps moyen / pièce</th>
-            <th>Tps min</th><th>Tps max</th><th>Total cumulé</th>
-        </tr></thead><tbody>`;
-    const measures = [
+    const total=data.length, ofs=new Set(data.map(r=>r.of)).size;
+    const avg=k=>data.reduce((s,r)=>s+(r[k]||0),0)/total;
+    const avgRayures=avg('rayures'),avgManip=avg('manip'),avgDessous=avg('dessous');
+    const avgAgencement=avg('agencement'),avgMarquage=avg('marquage'),avgOutil=avg('outil');
+    const avgIncomp=avgRayures+avgManip+avgDessous, avgAuto=avgAgencement+avgMarquage+avgOutil;
+    const avgTotal=avgIncomp+avgAuto;
+    const opMap={};
+    data.forEach(r=>{ if(!opMap[r.operateur]) opMap[r.operateur]={pieces:0,incomp:0,auto:0}; opMap[r.operateur].pieces++; opMap[r.operateur].incomp+=(r.rayures||0)+(r.manip||0)+(r.dessous||0); opMap[r.operateur].auto+=(r.agencement||0)+(r.marquage||0)+(r.outil||0); });
+    const ofMap={};
+    data.forEach(r=>{ if(!ofMap[r.of]) ofMap[r.of]={of:r.of,ref:r.ref,affaire:r.affaire,op:r.operateur,qt:r.qt,ech:r.ech,pieces:[],install:r.install||0,rapport:r.rapport||0}; ofMap[r.of].pieces.push(r); });
+    let html=`<div class="card"><h2>📊 Vue globale</h2><div class="stats-row">
+        <div class="stat-box"><h4>Pièces mesurées</h4><div class="val">${total}</div></div>
+        <div class="stat-box amber"><h4>Lots (OF)</h4><div class="val">${ofs}</div></div>
+        <div class="stat-box teal"><h4>Tps moyen total/pièce</h4><div class="val" style="font-size:18px;">${fmt(avgTotal)}</div></div>
+        <div class="stat-box red"><h4>🔴 Tps incompressible</h4><div class="val" style="font-size:18px;">${fmt(avgIncomp)}</div></div>
+        <div class="stat-box green"><h4>🟢 Tps automatisable</h4><div class="val" style="font-size:18px;">${fmt(avgAuto)}</div></div>
+    </div></div>`;
+    const measures=[
         {key:'rayures',label:'Ctrl visuel (Rayures,aspect)',type:'🔴 Incompressible'},
         {key:'manip',label:'Manipulation + Fonctionnel',type:'🔴 Incompressible'},
         {key:'dessous',label:'Ctrl dessous pièce',type:'🔴 Incompressible'},
@@ -806,194 +701,74 @@ function renderStats() {
         {key:'marquage',label:'Ctrl Marquage',type:'🟢 Automatisable KITOV'},
         {key:'outil',label:'Temps Outil ARRK',type:'🟢 Automatisable KITOV'},
     ];
-    measures.forEach(m => {
-        const vals = data.map(r=>r[m.key]||0).filter(v=>v>0);
-        if (!vals.length) return;
-        const avg=vals.reduce((s,v)=>s+v,0)/vals.length;
-        const mn=Math.min(...vals), mx=Math.max(...vals), tot=vals.reduce((s,v)=>s+v,0);
-        const bg = m.type.includes('🔴') ? 'background:#fff5f5' : 'background:#f0fff4';
-        html += `<tr style="${bg}">
-            <td><strong>${m.label}</strong></td>
-            <td>${m.type}</td>
-            <td><strong>${fmt(avg)}</strong></td>
-            <td>${fmt(mn)}</td>
-            <td>${fmt(mx)}</td>
-            <td>${fmt(tot)}</td>
-        </tr>`;
+    html+=`<div class="card"><h2>📋 Détail des temps moyens par mesure</h2><table class="stats-tbl"><thead><tr><th>Mesure</th><th>Type</th><th>Tps moyen / pièce</th><th>Tps min</th><th>Tps max</th><th>Total cumulé</th></tr></thead><tbody>`;
+    measures.forEach(m=>{
+        const vals=data.map(r=>r[m.key]||0).filter(v=>v>0); if(!vals.length) return;
+        const a=vals.reduce((s,v)=>s+v,0)/vals.length, mn=Math.min(...vals), mx=Math.max(...vals), tot=vals.reduce((s,v)=>s+v,0);
+        const bg=m.type.includes('🔴')?'background:#fff5f5':'background:#f0fff4';
+        html+=`<tr style="${bg}"><td><strong>${m.label}</strong></td><td>${m.type}</td><td><strong>${fmt(a)}</strong></td><td>${fmt(mn)}</td><td>${fmt(mx)}</td><td>${fmt(tot)}</td></tr>`;
     });
-    // Install et rapport
-    const instVals = data.map(r=>r.install||0).filter(v=>v>0);
-    const rappVals = data.map(r=>r.rapport||0).filter(v=>v>0);
-    if (instVals.length) {
-        const avg=instVals.reduce((s,v)=>s+v,0)/instVals.length;
-        html+=`<tr><td><strong>Installation outils (lot)</strong></td><td>🔧 1x/lot</td><td>${fmt(avg)}</td><td>${fmt(Math.min(...instVals))}</td><td>${fmt(Math.max(...instVals))}</td><td>—</td></tr>`;
-    }
-    if (rappVals.length) {
-        const avg=rappVals.reduce((s,v)=>s+v,0)/rappVals.length;
-        html+=`<tr><td><strong>Rédaction rapport (lot)</strong></td><td>📝 1x/lot</td><td>${fmt(avg)}</td><td>${fmt(Math.min(...rappVals))}</td><td>${fmt(Math.max(...rappVals))}</td><td>—</td></tr>`;
-    }
-    html += `</tbody></table></div>`;
-
-    // Stats par opérateur
-    html += `<div class="card"><h2>👤 Temps moyens par opérateur</h2>
-        <table class="stats-tbl"><thead><tr>
-            <th>Opérateur</th><th>Pièces</th><th>Tps incompressible/pc</th><th>Tps automatisable/pc</th><th>Tps total/pc</th>
-        </tr></thead><tbody>`;
-    Object.entries(opMap).sort((a,b)=>b[1].pieces-a[1].pieces).forEach(([op,v]) => {
-        const avgI=v.incomp/v.pieces, avgA=v.auto/v.pieces;
-        html += `<tr>
-            <td><strong>${op}</strong></td>
-            <td>${v.pieces}</td>
-            <td>${fmt(avgI)}</td>
-            <td>${fmt(avgA)}</td>
-            <td><strong>${fmt(avgI+avgA)}</strong></td>
-        </tr>`;
+    const instVals=data.map(r=>r.install||0).filter(v=>v>0), rappVals=data.map(r=>r.rapport||0).filter(v=>v>0);
+    if(instVals.length){const a=instVals.reduce((s,v)=>s+v,0)/instVals.length;html+=`<tr><td><strong>Installation outils (lot)</strong></td><td>🔧 1x/lot</td><td>${fmt(a)}</td><td>${fmt(Math.min(...instVals))}</td><td>${fmt(Math.max(...instVals))}</td><td>—</td></tr>`;}
+    if(rappVals.length){const a=rappVals.reduce((s,v)=>s+v,0)/rappVals.length;html+=`<tr><td><strong>Rédaction rapport (lot)</strong></td><td>📝 1x/lot</td><td>${fmt(a)}</td><td>${fmt(Math.min(...rappVals))}</td><td>${fmt(Math.max(...rappVals))}</td><td>—</td></tr>`;}
+    html+=`</tbody></table></div>`;
+    html+=`<div class="card"><h2>👤 Temps moyens par opérateur</h2><table class="stats-tbl"><thead><tr><th>Opérateur</th><th>Pièces</th><th>Tps incompressible/pc</th><th>Tps automatisable/pc</th><th>Tps total/pc</th></tr></thead><tbody>`;
+    Object.entries(opMap).sort((a,b)=>b[1].pieces-a[1].pieces).forEach(([op,v])=>{
+        const aI=v.incomp/v.pieces,aA=v.auto/v.pieces;
+        html+=`<tr><td><strong>${op}</strong></td><td>${v.pieces}</td><td>${fmt(aI)}</td><td>${fmt(aA)}</td><td><strong>${fmt(aI+aA)}</strong></td></tr>`;
     });
-    html += `</tbody></table></div>`;
-
-    // Stats par OF
-    html += `<div class="card"><h2>📦 Détail par OF</h2>
-        <table class="stats-tbl"><thead><tr>
-            <th>N°OF</th><th>Affaire</th><th>Réf.</th><th>Opérateur</th>
-            <th>Qt lot</th><th>Éch.</th><th>Pcs mesurées</th>
-            <th>Tps incomp/pc</th><th>Tps auto/pc</th><th>Install</th><th>Rapport</th>
-        </tr></thead><tbody>`;
-    Object.values(ofMap).forEach(of => {
+    html+=`</tbody></table></div>`;
+    html+=`<div class="card"><h2>📦 Détail par OF</h2><table class="stats-tbl"><thead><tr><th>N°OF</th><th>Affaire</th><th>Réf.</th><th>Opérateur</th><th>Qt lot</th><th>Éch.</th><th>Pcs mesurées</th><th>Tps incomp/pc</th><th>Tps auto/pc</th><th>Install</th><th>Rapport</th></tr></thead><tbody>`;
+    Object.values(ofMap).forEach(of=>{
         const n=of.pieces.length;
-        const avgI=(of.pieces.reduce((s,r)=>s+(r.rayures||0)+(r.manip||0)+(r.dessous||0),0))/n;
-        const avgA=(of.pieces.reduce((s,r)=>s+(r.agencement||0)+(r.marquage||0)+(r.outil||0),0))/n;
-        html += `<tr>
-            <td><strong>${of.of}</strong></td>
-            <td>${of.affaire||'—'}</td>
-            <td>${of.ref}</td>
-            <td>${of.op}</td>
-            <td>${of.qt}</td>
-            <td>${of.ech}</td>
-            <td>${n}</td>
-            <td>${fmt(avgI)}</td>
-            <td>${fmt(avgA)}</td>
-            <td>${of.install>0?fmt(of.install):'—'}</td>
-            <td>${of.rapport>0?fmt(of.rapport):'—'}</td>
-        </tr>`;
+        const aI=of.pieces.reduce((s,r)=>s+(r.rayures||0)+(r.manip||0)+(r.dessous||0),0)/n;
+        const aA=of.pieces.reduce((s,r)=>s+(r.agencement||0)+(r.marquage||0)+(r.outil||0),0)/n;
+        html+=`<tr><td><strong>${of.of}</strong></td><td>${of.affaire||'—'}</td><td>${of.ref}</td><td>${of.op}</td><td>${of.qt}</td><td>${of.ech}</td><td>${n}</td><td>${fmt(aI)}</td><td>${fmt(aA)}</td><td>${of.install>0?fmt(of.install):'—'}</td><td>${of.rapport>0?fmt(of.rapport):'—'}</td></tr>`;
     });
-    html += `</tbody></table></div>`;
-
-    c.innerHTML = html;
+    html+=`</tbody></table></div>`;
+    c.innerHTML=html;
 }
-
-// ═══ EXPORT EXCEL ═══
 function exportExcel() {
     if (!data.length) { alert('Aucune donnée à exporter.'); return; }
-    const wb = XLSX.utils.book_new();
-
-    const toRow = r => ({
-        'Date': new Date(r.date).toLocaleDateString('fr-FR'),
-        'Opérateur': r.operateur,
-        'N° Affaire': r.affaire||'',
-        'N° OF': r.of||'',
-        'Référence': r.ref,
-        'Pièce N°': Number(r.pieceNumber),
-        'Taille lot': Number(r.qt),
-        'Taille échantillon': Number(r.ech),
-        'Nb IS Frittés': Number(r.nbIs||0),
-        'Temps gammé (min)': r.gamme>0 ? r.gamme.toFixed(2).replace('.',',') : '',
-        '🔴 Ctrl visuel Rayures (min)': r.rayures>0 ? r.rayures.toFixed(2).replace('.',',') : '',
-        '🔴 Manipulation Fonctionnel (min)': r.manip>0 ? r.manip.toFixed(2).replace('.',',') : '',
-        '🔴 Ctrl dessous pièce (min)': r.dessous>0 ? r.dessous.toFixed(2).replace('.',',') : '',
-        '🟢 Ctrl visuel Agencement (min)': r.agencement>0 ? r.agencement.toFixed(2).replace('.',',') : '',
-        '🟢 Ctrl Marquage (min)': r.marquage>0 ? r.marquage.toFixed(2).replace('.',',') : '',
-        '🟢 Temps Outil ARRK (min)': r.outil>0 ? r.outil.toFixed(2).replace('.',',') : '',
-        '1ère Installation outils (min)': r.install>0 ? r.install.toFixed(2).replace('.',',') : '',
-        'Rédaction rapport (min)': r.rapport>0 ? r.rapport.toFixed(2).replace('.',',') : '',
-        'Observations': r.obs||''
-    });
-
-    // Feuille 1 : toutes les données
-    const ws1 = XLSX.utils.json_to_sheet(data.map(toRow));
-    XLSX.utils.book_append_sheet(wb, ws1, 'Toutes les données');
-
-    // Feuille 2 : stats résumé
-    const measures = ['rayures','manip','dessous','agencement','marquage','outil'];
-    const statsRows = measures.map(m => {
-        const vals = data.map(r=>r[m]||0).filter(v=>v>0);
-        if (!vals.length) return null;
-        const avg=vals.reduce((s,v)=>s+v,0)/vals.length;
-        return {
-            'Mesure': m,
-            'Nb mesures': vals.length,
-            'Moy (min)': avg.toFixed(2).replace('.',','),
-            'Min (min)': Math.min(...vals).toFixed(2).replace('.',','),
-            'Max (min)': Math.max(...vals).toFixed(2).replace('.',','),
-        };
-    }).filter(Boolean);
-    const ws2 = XLSX.utils.json_to_sheet(statsRows);
-    XLSX.utils.book_append_sheet(wb, ws2, 'Indicateurs');
-
-    XLSX.writeFile(wb, `EXALTA_Ctrl_Finaux_${new Date().toISOString().split('T')[0]}.xlsx`);
+    const wb=XLSX.utils.book_new();
+    const toRow=r=>({'Date':new Date(r.date).toLocaleDateString('fr-FR'),'Opérateur':r.operateur,'N° Affaire':r.affaire||'','N° OF':r.of||'','Référence':r.ref,'Pièce N°':Number(r.pieceNumber),'Taille lot':Number(r.qt),'Taille échantillon':Number(r.ech),'Nb IS Frittés':Number(r.nbIs||0),'Temps gammé (min)':r.gamme>0?r.gamme.toFixed(2).replace('.',','):'','🔴 Ctrl visuel Rayures (min)':r.rayures>0?r.rayures.toFixed(2).replace('.',','):'','🔴 Manipulation Fonctionnel (min)':r.manip>0?r.manip.toFixed(2).replace('.',','):'','🔴 Ctrl dessous pièce (min)':r.dessous>0?r.dessous.toFixed(2).replace('.',','):'','🟢 Ctrl visuel Agencement (min)':r.agencement>0?r.agencement.toFixed(2).replace('.',','):'','🟢 Ctrl Marquage (min)':r.marquage>0?r.marquage.toFixed(2).replace('.',','):'','🟢 Temps Outil ARRK (min)':r.outil>0?r.outil.toFixed(2).replace('.',','):'','1ère Installation outils (min)':r.install>0?r.install.toFixed(2).replace('.',','):'','Rédaction rapport (min)':r.rapport>0?r.rapport.toFixed(2).replace('.',','):'','Observations':r.obs||''});
+    const ws1=XLSX.utils.json_to_sheet(data.map(toRow));
+    XLSX.utils.book_append_sheet(wb,ws1,'Toutes les données');
+    const msrs=['rayures','manip','dessous','agencement','marquage','outil'];
+    const statsRows=msrs.map(m=>{const vals=data.map(r=>r[m]||0).filter(v=>v>0);if(!vals.length)return null;const a=vals.reduce((s,v)=>s+v,0)/vals.length;return{'Mesure':m,'Nb mesures':vals.length,'Moy (min)':a.toFixed(2).replace('.',','),'Min (min)':Math.min(...vals).toFixed(2).replace('.',','),'Max (min)':Math.max(...vals).toFixed(2).replace('.',',')};}).filter(Boolean);
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(statsRows),'Indicateurs');
+    XLSX.writeFile(wb,`EXALTA_Ctrl_Finaux_${new Date().toISOString().split('T')[0]}.xlsx`);
 }
-
-// ═══ IMPORT EXCEL ═══
 function importExcel(input) {
-    const file = input.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
+    const file=input.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=function(e){
         try {
-            const wb = XLSX.read(e.target.result, {type:'binary'});
-            const ws = wb.Sheets[wb.SheetNames.includes('Toutes les données') ? 'Toutes les données' : wb.SheetNames[0]];
-            const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
-            let imported=0, errors=0;
-
-            rows.forEach(row => {
+            const wb=XLSX.read(e.target.result,{type:'binary'});
+            const ws=wb.Sheets[wb.SheetNames.includes('Toutes les données')?'Toutes les données':wb.SheetNames[0]];
+            const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+            let imported=0,errors=0;
+            rows.forEach(row=>{
                 try {
                     let dateStr='';
-                    const rawDate = row['Date']||'';
-                    if (rawDate instanceof Date) dateStr=rawDate.toISOString().split('T')[0];
-                    else if (typeof rawDate==='number') { const d=new Date((rawDate-25569)*86400*1000); dateStr=d.toISOString().split('T')[0]; }
-                    else if (typeof rawDate==='string' && rawDate.includes('/')) {
-                        const p=rawDate.split('/');
-                        if(p.length===3) dateStr=`${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
-                    } else dateStr=rawDate||new Date().toISOString().split('T')[0];
-
-                    const isDup = data.some(d => d.of===String(row['N° OF']||'') && d.pieceNumber==(row['Pièce N°']||0) && d.date===dateStr);
-                    if (isDup) return;
-
-                    const pv = v => parseFloat(String(v||0).replace(',','.')) || 0;
-                    const entry = {
-                        date: dateStr,
-                        operateur: String(row['Opérateur']||''),
-                        affaire: String(row['N° Affaire']||''),
-                        of: String(row['N° OF']||''),
-                        ref: String(row['Référence']||''),
-                        pieceNumber: Number(row['Pièce N°']||1),
-                        qt: Number(row['Taille lot']||0),
-                        ech: Number(row['Taille échantillon']||0),
-                        nbIs: Number(row['Nb IS Frittés']||0),
-                        gamme: pv(row['Temps gammé (min)']),
-                        rayures: pv(row['🔴 Ctrl visuel Rayures (min)']),
-                        manip: pv(row['🔴 Manipulation Fonctionnel (min)']),
-                        dessous: pv(row['🔴 Ctrl dessous pièce (min)']),
-                        agencement: pv(row['🟢 Ctrl visuel Agencement (min)']),
-                        marquage: pv(row['🟢 Ctrl Marquage (min)']),
-                        outil: pv(row['🟢 Temps Outil ARRK (min)']),
-                        install: pv(row['1ère Installation outils (min)']),
-                        rapport: pv(row['Rédaction rapport (min)']),
-                        obs: String(row['Observations']||'')
-                    };
-                    data.push(entry); imported++;
-                } catch(err) { errors++; }
+                    const rawDate=row['Date']||'';
+                    if(rawDate instanceof Date) dateStr=rawDate.toISOString().split('T')[0];
+                    else if(typeof rawDate==='number'){const d=new Date((rawDate-25569)*86400*1000);dateStr=d.toISOString().split('T')[0];}
+                    else if(typeof rawDate==='string'&&rawDate.includes('/')){const p=rawDate.split('/');if(p.length===3)dateStr=`${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;}
+                    else dateStr=rawDate||new Date().toISOString().split('T')[0];
+                    const isDup=data.some(d=>d.of===String(row['N° OF']||'')&&d.pieceNumber==(row['Pièce N°']||0)&&d.date===dateStr);
+                    if(isDup) return;
+                    const pv=v=>parseFloat(String(v||0).replace(',','.'))||0;
+                    data.push({date:dateStr,operateur:String(row['Opérateur']||''),affaire:String(row['N° Affaire']||''),of:String(row['N° OF']||''),ref:String(row['Référence']||''),pieceNumber:Number(row['Pièce N°']||1),qt:Number(row['Taille lot']||0),ech:Number(row['Taille échantillon']||0),nbIs:Number(row['Nb IS Frittés']||0),gamme:pv(row['Temps gammé (min)']),rayures:pv(row['🔴 Ctrl visuel Rayures (min)']),manip:pv(row['🔴 Manipulation Fonctionnel (min)']),dessous:pv(row['🔴 Ctrl dessous pièce (min)']),agencement:pv(row['🟢 Ctrl visuel Agencement (min)']),marquage:pv(row['🟢 Ctrl Marquage (min)']),outil:pv(row['🟢 Temps Outil ARRK (min)']),install:pv(row['1ère Installation outils (min)']),rapport:pv(row['Rédaction rapport (min)']),obs:String(row['Observations']||'')});
+                    imported++;
+                } catch(err){errors++;}
             });
-
             save(); renderTable(); renderStats();
-            const res=g('importResult');
-            res.style.display='block';
-            if (imported>0) { res.className='import-result success'; res.textContent=`✅ Import réussi : ${imported} ligne(s) ajoutée(s)${errors>0?`, ${errors} ignorée(s)`:''}. `; }
-            else { res.className='import-result error'; res.textContent=`⚠️ Aucune nouvelle ligne importée.`; }
-            setTimeout(()=>{ res.style.display='none'; }, 5000);
-        } catch(err) {
-            const res=g('importResult');
-            res.style.display='block'; res.className='import-result error';
-            res.textContent=`❌ Erreur : ${err.message}`;
-        }
+            const res=g('importResult'); res.style.display='block';
+            if(imported>0){res.className='import-result success';res.textContent=`✅ Import réussi : ${imported} ligne(s) ajoutée(s)${errors>0?`, ${errors} ignorée(s)`:''}.`;}
+            else{res.className='import-result error';res.textContent='⚠️ Aucune nouvelle ligne importée.';}
+            setTimeout(()=>{res.style.display='none';},5000);
+        } catch(err){const res=g('importResult');res.style.display='block';res.className='import-result error';res.textContent=`❌ Erreur : ${err.message}`;}
         input.value='';
     };
     reader.readAsBinaryString(file);
